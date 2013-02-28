@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Project Smooth]]></title>
+  <title><![CDATA[Project: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-02-28T07:01:35+02:00</updated>
+  <updated>2013-02-28T09:48:40+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -12,5 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Testing, testing, 1, 2, 3 ...]]></title>
+    <link href="http://avih.github.com/blog/2013/02/28/initial-post/"/>
+    <updated>2013-02-28T07:13:00+02:00</updated>
+    <id>http://avih.github.com/blog/2013/02/28/initial-post</id>
+    <content type="html"><![CDATA[<p>Since I recently joined the performance team at Mozilla, I&#8217;ve been working on improving animation smoothness, starting with tab animation.</p>
+
+<p>In this space, I hope to provide interesting progress notes on this and related subjects.</p>
+]]></content>
+  </entry>
   
 </feed>
