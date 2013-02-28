@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Hello World! - Operation: Smooth</title>
+  <title>Help wanted: Slow touchpad scroll in firefox? - Operation: Smooth</title>
   <meta name="author" content="Avi Halachmi (:avih)">
 
   
-  <meta name="description" content="When your manager does your work for you, it’s a bit like a kick in the ass. With an iron boot. A spiked one. As I don’t generally find those too &hellip;">
+  <meta name="description" content="When I became aware of bug 829952 (Scrolling using touchpad feels slow on some laptops), I jumped in. Turns out that due to many laptops and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://avih.github.com/blog/2013/02/28/initial-post/">
+  <link rel="canonical" href="http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -69,7 +69,7 @@
   
   <header>
     
-      <h1 class="entry-title">Hello World!</h1>
+      <h1 class="entry-title">Help Wanted: Slow Touchpad Scroll in Firefox?</h1>
     
     
       <p class="meta">
@@ -85,7 +85,7 @@
   
 
 
-<time datetime="2013-02-28T07:13:00+02:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+<time datetime="2013-02-28T19:33:00+02:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -94,15 +94,24 @@
   </header>
 
 
-<div class="entry-content"><p>When your manager does your work <a href="http://taras.glek.net/blog/2013/02/22/snappy-number-51-smoothing-tab-animations/">for you</a>, it’s a bit like a kick in the ass. With an iron boot. A spiked one. As I don’t generally find those too amusing [1], I’ve finally setup this blog. You can read a bit about me <a href="/about">here</a>.</p>
+<div class="entry-content"><p>When I became aware of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">bug 829952</a> (Scrolling using touchpad feels slow on some laptops), I jumped in.</p>
 
-<p>Welcome aboard.</p>
+<p>Turns out that due to many laptops and touchpads manufacturers, different drivers, OS configurations etc, it’s quite hard to provide a consistent scroll experience on the various platforms which Firefox supports. We could have provided some (or a lot of) configuration UI, but the best solution would be to get it as good as possible out of the box.</p>
 
-<p>Since I recently joined the performance team at Mozilla, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
+<p>And to do that, we need data - and you might be able to help.</p>
 
-<p>In this space, I hope to provide interesting progress notes on this and related subjects.</p>
+<p>On my system (Asus laptop, Elantech touchpad, Windows 7), the touchpad does produce pixel-accurate scroll in Firefox, but doesn’t send its events as true pixel data (WM_GESTURES windows event). Instead, it sends mouse wheel events, but very rapidly and with fractional line values (it’s a legitimate approach with <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms645617%28v=vs.85%29.aspx">WM_MOUSEWHEEL</a>). This results in Firefox processing it through the “mouse wheel path”, even when the frequency and value of the events allow pixel-accurate positioning of the content.</p>
 
-<p>[1] <em>Obviously, I was joking. They’re hugely entertaining!</em></p>
+<p>It was interesting to compare how this kind of event is handled on other browsers, so I wrote a cross-browser testcase which measures <a href="/testcases/mozwheel-test-v4.html">just that</a>. The best way to use it is to scroll (e.g. with two fingers) consistently from top to bottom of the touch pad. After each such scroll, the page displays related events values, and the overall scrolled distance (pageYOffset). Reset and repeat this few times, until you can get consistent results. Then, try it also with other browsers.</p>
+
+<p>On my system, if Firefox scroll x pixels for one top-to-bottom two-fingers swipe, then, for the same swipe:<br />
+- Chrome scrolls 1.7x<br />
+- IE scrolls 6x<br />
+- Opera scrolls 13x</p>
+
+<p>Quite a difference! With the numbers (consistently) all over the place. For me, Opera scrolls way too fast (does it treat every fractional mouse wheel event as a full line request?), Firefox scrolls slower than I’d like. Chrome could also be faster, and IE feels a bit too fast for my taste. Obviously, there’s no real right or wrong here, as it’s a very subjective matter.</p>
+
+<p>How do the browsers compare on your system? (Linux? OS X? Windows?) Is Firefox considerably slower than the rest? Does it feel too slow to you? If you have a bugzilla account, you can post directly at the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">bug</a>, otherwise, you’re welcome to leave a comment here.</p>
 </div>
 
 
@@ -125,7 +134,7 @@
   
 
 
-<time datetime="2013-02-28T07:13:00+02:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+<time datetime="2013-02-28T19:33:00+02:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
       
 
 
@@ -133,7 +142,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://avih.github.com/blog/2013/02/28/initial-post/" data-via="" data-counturl="http://avih.github.com/blog/2013/02/28/initial-post/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox/" data-via="" data-counturl="http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -146,8 +155,8 @@
     
     <p class="meta">
       
+        <a class="basic-alignment left" href="/blog/2013/02/28/initial-post/" title="Previous Post: Hello World!">&laquo; Hello World!</a>
       
-        <a class="basic-alignment right" href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/" title="Next Post: Help wanted: Slow touchpad scroll in firefox?">Help wanted: Slow touchpad scroll in firefox? &raquo;</a>
       
     </p>
   </footer>
@@ -202,8 +211,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://avih.github.com/blog/2013/02/28/initial-post/';
-        var disqus_url = 'http://avih.github.com/blog/2013/02/28/initial-post/';
+        var disqus_identifier = 'http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox/';
+        var disqus_url = 'http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox/';
         var disqus_script = 'embed.js';
       
     (function () {

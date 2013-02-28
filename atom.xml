@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-02-28T17:01:30+02:00</updated>
+  <updated>2013-02-28T19:45:32+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -14,19 +14,11 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Help wanted - Slow touchpad scroll in Firefox?]]></title>
-    <link href="http://avih.github.com/blog/2013/02/28/initial-post/"/>
-    <updated>2013-02-28T07:13:00+02:00</updated>
-    <id>http://avih.github.com/blog/2013/02/28/initial-post</id>
-    <content type="html"><![CDATA[<p>When your manager does your work <a href="http://taras.glek.net/blog/2013/02/22/snappy-number-51-smoothing-tab-animations/">for you</a>, it’s a bit like a kick in the ass. With an iron boot. A spiked one. As I don’t generally find those too amusing [1], I’ve finally opened this blog. You can read a bit about me <a href="http://avih.github.com/about">here</a>. Welcome aboard.</p>
-
-<p>Since I recently joined the performance team at Mozilla, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
-
-<p>In this space, I hope to provide interesting progress notes on this and related subjects.</p>
-
-<p>So let’s get to business.</p>
-
-<p>When I became aware of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">bug 829952</a> (Scrolling using touchpad feels slow on some laptops), I jumped in (leather boot, hopefully the last).</p>
+    <title type="html"><![CDATA[Help wanted: Slow touchpad scroll in firefox?]]></title>
+    <link href="http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox/"/>
+    <updated>2013-02-28T19:33:00+02:00</updated>
+    <id>http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox</id>
+    <content type="html"><![CDATA[<p>When I became aware of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">bug 829952</a> (Scrolling using touchpad feels slow on some laptops), I jumped in.</p>
 
 <p>Turns out that due to many laptops and touchpads manufacturers, different drivers, OS configurations etc, it’s quite hard to provide a consistent scroll experience on the various platforms which Firefox supports. We could have provided some (or a lot of) configuration UI, but the best solution would be to get it as good as possible out of the box.</p>
 
@@ -44,6 +36,21 @@
 <p>Quite a difference! With the numbers (consistently) all over the place. For me, Opera scrolls way too fast (does it treat every fractional mouse wheel event as a full line request?), Firefox scrolls slower than I’d like. Chrome could also be faster, and IE feels a bit too fast for my taste. Obviously, there’s no real right or wrong here, as it’s a very subjective matter.</p>
 
 <p>How do the browsers compare on your system? (Linux? OS X? Windows?) Is Firefox considerably slower than the rest? Does it feel too slow to you? If you have a bugzilla account, you can post directly at the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">bug</a>, otherwise, you’re welcome to leave a comment here.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Hello World!]]></title>
+    <link href="http://avih.github.com/blog/2013/02/28/initial-post/"/>
+    <updated>2013-02-28T07:13:00+02:00</updated>
+    <id>http://avih.github.com/blog/2013/02/28/initial-post</id>
+    <content type="html"><![CDATA[<p>When your manager does your work <a href="http://taras.glek.net/blog/2013/02/22/snappy-number-51-smoothing-tab-animations/">for you</a>, it’s a bit like a kick in the ass. With an iron boot. A spiked one. As I don’t generally find those too amusing [1], I’ve finally setup this blog. You can read a bit about me <a href="http://avih.github.com/about">here</a>.</p>
+
+<p>Welcome aboard.</p>
+
+<p>Since I recently joined the performance team at Mozilla, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
+
+<p>In this space, I hope to provide interesting progress notes on this and related subjects.</p>
 
 <p>[1] <em>Obviously, I was joking. They’re hugely entertaining!</em></p>
 ]]></content>
