@@ -38,7 +38,7 @@
   <header role="banner"><hgroup>
   <h1><a href="/">Operation: Smooth</a></h1>
   
-    <h2>Mozilla performance notes from a personal perspective</h2>
+    <h2>Mozilla performance notes - a personal view</h2>
   
 </hgroup>
 
@@ -101,22 +101,13 @@
 
 <p>Turns out that due to many laptops and touchpads manufacturers, different drivers, OS configurations etc, it’s quite hard to provide a consistent scroll experience on the various platforms which Firefox supports. We could have provided some (or a lot of) configuration UI, but the best solution would be to get it as good as possible out of the box.</p>
 
-<p>And to do that, we need data - and you might be able to help.</p>
-
-<p>On my system (Asus laptop, Elantech touchpad, Windows 7), the touchpad does produce pixel-accurate scroll in Firefox, but doesn’t send its events as true pixel data (WM_GESTURES windows event). Instead, it sends mouse wheel events, but very rapidly and with fractional line values (it’s a legitimate approach with <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms645617%28v=vs.85%29.aspx">WM_MOUSEWHEEL</a>). This results in Firefox processing it through the “mouse wheel path”, even when the frequency and value of the events allow pixel-accurate positioning of the content.</p>
-
-<p>It was interesting to compare how this kind of event is handled on other browsers, so I wrote a cross-browser testcase which measures <a href="/testcases/mozwheel-test-v4.html">just that</a>. The best way to use it is to scroll (e.g. with two fingers) consistently from top to bottom of the touch pad. After each such scroll, the page displays related events values, and the overall scrolled distance (pageYOffset). Reset and repeat this few times, until you can get consistent results. Then, try it also with other browsers.</p>
-
-<p>On my system, if Firefox scroll x pixels for one top-to-bottom two-fingers swipe, then, for the same swipe:<br />
-- Chrome scrolls 1.7x<br />
-- IE scrolls 6x<br />
-- Opera scrolls 13x</p>
-
-<p>Quite a difference! With the numbers (consistently) all over the place. For me, Opera scrolls way too fast (does it treat every fractional mouse wheel event as a full line request?), Firefox scrolls slower than I’d like. Chrome could also be faster, and IE feels a bit too fast for my taste. Obviously, there’s no real right or wrong here, as it’s a very subjective matter.</p>
-
-<p>How do the browsers compare on your system? (Linux? OS X? Windows?) Is Firefox considerably slower than the rest? Does it feel too slow to you? If you have a bugzilla account, you can post directly at the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">bug</a>, otherwise, you’re welcome to leave a comment here.</p>
+<p>And to do that, we need data - and you might be able to help.
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/">Read on &rarr;</a>
+    </footer>
   
 
 
@@ -154,15 +145,13 @@
 
   <div class="entry-content"><p>When your manager does your work <a href="http://taras.glek.net/blog/2013/02/22/snappy-number-51-smoothing-tab-animations/">for you</a>, it’s a bit like a kick in the ass. With an iron boot. A spiked one. As I don’t generally find those too amusing [1], I’ve finally setup this blog. You can read a bit about me <a href="/about">here</a>.</p>
 
-<p>Welcome aboard.</p>
-
-<p>Since I recently joined the performance team at Mozilla, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
-
-<p>In this space, I hope to provide interesting progress notes on this and related subjects.</p>
-
-<p>[1] <em>Obviously, I was joking. They’re hugely entertaining!</em></p>
+<p>Welcome aboard.
 </div>
   
+  
+    <footer>
+      <a rel="full-article" href="/blog/2013/02/28/initial-post/">Read on &rarr;</a>
+    </footer>
   
 
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-02-28T19:45:32+02:00</updated>
+  <updated>2013-02-28T19:50:43+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -22,9 +22,9 @@
 
 <p>Turns out that due to many laptops and touchpads manufacturers, different drivers, OS configurations etc, it’s quite hard to provide a consistent scroll experience on the various platforms which Firefox supports. We could have provided some (or a lot of) configuration UI, but the best solution would be to get it as good as possible out of the box.</p>
 
-<p>And to do that, we need data - and you might be able to help.</p>
-
-<p>On my system (Asus laptop, Elantech touchpad, Windows 7), the touchpad does produce pixel-accurate scroll in Firefox, but doesn’t send its events as true pixel data (WM_GESTURES windows event). Instead, it sends mouse wheel events, but very rapidly and with fractional line values (it’s a legitimate approach with <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms645617%28v=vs.85%29.aspx">WM_MOUSEWHEEL</a>). This results in Firefox processing it through the “mouse wheel path”, even when the frequency and value of the events allow pixel-accurate positioning of the content.</p>
+<p>And to do that, we need data - and you might be able to help.
+<!-- more -->
+On my system (Asus laptop, Elantech touchpad, Windows 7), the touchpad does produce pixel-accurate scroll in Firefox, but doesn’t send its events as true pixel data (WM_GESTURES windows event). Instead, it sends mouse wheel events, but very rapidly and with fractional line values (it’s a legitimate approach with <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms645617%28v=vs.85%29.aspx">WM_MOUSEWHEEL</a>). This results in Firefox processing it through the “mouse wheel path”, even when the frequency and value of the events allow pixel-accurate positioning of the content.</p>
 
 <p>It was interesting to compare how this kind of event is handled on other browsers, so I wrote a cross-browser testcase which measures <a href="http://avih.github.com/testcases/mozwheel-test-v4.html">just that</a>. The best way to use it is to scroll (e.g. with two fingers) consistently from top to bottom of the touch pad. After each such scroll, the page displays related events values, and the overall scrolled distance (pageYOffset). Reset and repeat this few times, until you can get consistent results. Then, try it also with other browsers.</p>
 
@@ -46,9 +46,9 @@
     <id>http://avih.github.com/blog/2013/02/28/initial-post</id>
     <content type="html"><![CDATA[<p>When your manager does your work <a href="http://taras.glek.net/blog/2013/02/22/snappy-number-51-smoothing-tab-animations/">for you</a>, it’s a bit like a kick in the ass. With an iron boot. A spiked one. As I don’t generally find those too amusing [1], I’ve finally setup this blog. You can read a bit about me <a href="http://avih.github.com/about">here</a>.</p>
 
-<p>Welcome aboard.</p>
-
-<p>Since I recently joined the performance team at Mozilla, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
+<p>Welcome aboard.
+<!-- more -->
+Since I recently joined the performance team at Mozilla, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
 
 <p>In this space, I hope to provide interesting progress notes on this and related subjects.</p>
 
