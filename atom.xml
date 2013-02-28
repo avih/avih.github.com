@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-02-28T19:56:26+02:00</updated>
+  <updated>2013-02-28T23:49:33+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -45,16 +45,15 @@
     <link href="http://avih.github.com/blog/2013/02/28/initial-post/"/>
     <updated>2013-02-28T07:13:00+02:00</updated>
     <id>http://avih.github.com/blog/2013/02/28/initial-post</id>
-    <content type="html"><![CDATA[<p>When your manager does your work <a href="http://taras.glek.net/blog/2013/02/22/snappy-number-51-smoothing-tab-animations/">for you</a>, it’s a bit like a kick in the ass. With an iron boot. A spiked one. As I don’t generally find those too amusing [1], I’ve finally setup this blog. You can read a bit about me <a href="http://avih.github.com/about">here</a>.</p>
+    <content type="html"><![CDATA[<p>When your manager does your work <a href="http://taras.glek.net/blog/2013/02/22/snappy-number-51-smoothing-tab-animations/">for you</a>, it means something has gone wrong along the way. So here is me fixing it - finally I’ve setup a blog. You can read a bit about me <a href="http://avih.github.com/about">here</a>.</p>
 
-<p>Welcome aboard.
-<!-- more --></p>
+<p>Welcome aboard.</p>
 
-<p>Since I recently joined the performance team at Mozilla, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
+<p>Since I joined the performance team at Mozilla not long ago, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
 
 <p>In this space, I hope to provide interesting progress notes on this and related subjects.</p>
 
-<p>[1] <em>Obviously, I was joking. They’re hugely entertaining!</em></p>
+<p>Stay tuned.</p>
 ]]></content>
   </entry>
   
