@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[Project Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-02-28T06:18:38+02:00</updated>
+  <updated>2013-02-28T06:59:18+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
+    <name><![CDATA[Avi Halachmi (:avih)]]></name>
     
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
