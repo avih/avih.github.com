@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: 
+
+Sitemap: http://avih.github.com/sitemap.xml 
