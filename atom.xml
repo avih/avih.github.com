@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-02-28T23:49:33+02:00</updated>
+  <updated>2013-03-01T06:16:48+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -14,13 +14,13 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Help wanted: Slow touchpad scroll in firefox?]]></title>
+    <title type="html"><![CDATA[Help wanted - Slow touchpad scroll in firefox?]]></title>
     <link href="http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox/"/>
     <updated>2013-02-28T19:33:00+02:00</updated>
     <id>http://avih.github.com/blog/2013/02/28/slow-touchpad-scroll-in-firefox</id>
-    <content type="html"><![CDATA[<p>When I became aware of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">bug 829952</a> (Scrolling using touchpad feels slow on some laptops), I jumped in.</p>
+    <content type="html"><![CDATA[<p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">Bug 829952</a> says that scrolling using the touchpad feels slow on some laptops.</p>
 
-<p>Turns out that due to many laptops and touchpads manufacturers, different drivers, OS configurations etc, it’s quite hard to provide a consistent scroll experience on the various platforms which Firefox supports. We could have provided some (or a lot of) configuration UI, but the best solution would be to get it as good as possible out of the box.</p>
+<p>Turns out that it’s quite hard to provide a consistent scroll experience on the various platforms which Firefox supports, due to many laptop and touchpad manufacturers, different drivers, OS configurations etc. We could have provided some (or a lot of) configuration UI, but the best solution would be to get it as good as possible out of the box.</p>
 
 <p>And to do that, we need data - and you might be able to help.
 <!-- more --></p>
