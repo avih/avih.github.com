@@ -12,7 +12,8 @@ function $(id) { return document.getElementById(id); }
 var lastDisplay = "";
 function updateStatsDisplay()
 {
-  var text = "pageYOffset: " + window.pageYOffset + "<br/>";
+  var text = "UA: " + navigator.userAgent + "<br/>-----------------<br/>";
+  text += "pageYOffset: " + window.pageYOffset + "<br/>";
   text += "<b>Accumulated:</b><br/>";
   for (var i in stats) {
     text +=      "Count: " + counts[i]
@@ -114,7 +115,7 @@ function initPage()
 </script>
 <style>
 .topLeft { position: fixed; top: 0;    left : 0; }
-.topLeft2{ position: fixed; top: 30px; left : 0; }
+.topLeft2{ position: fixed; top: 40px; left : 0; }
 
 .long    { height: 30000px; }
 .wide    { width:  5000px;  }
