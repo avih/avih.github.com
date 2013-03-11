@@ -103,8 +103,9 @@
 <p>While <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=845943">updating tscroll</a> talos test, I found that running the test in a browser outside of the talos framework could be useful. The page could be reloaded to re-run the test, allowing quicker iterations of the code. While this isn’t as sterile as the talos run environment, it’s still useful during development. This required substituting <code>tpRecordTime</code> with my own, and also displaying various statistics on the collected data.</p>
 
 <p>I’m not the not the only one who deployed such tactics, and one can find commented out <code>alert</code>s and statistics calculation (which are not reported to talos) on various talos tests.
-<!-- more -->
-So we had the idea of separating this debug stuff from tscroll, such that one can include this <code>talos-debug.js</code> file from any test, and then simply load the page in a browser and get a report of the recorded values together with some statistics.</p>
+<!-- more --></p>
+
+<p>So we had the idea of separating this debug stuff from tscroll, such that one can include this <code>talos-debug.js</code> file from any test, and then simply load the page in a browser and get a report of the recorded values together with some statistics.</p>
 
 <p>This file adds a <code>window.talosDebug</code> object which provides some statistical functions (<code>sum</code>, <code>average</code>, <code>median</code> and <code>stddev</code>) and a <code>tpRecordTime</code> method which also displays the stats. It can be controlled by few properties (such as <code>displayData</code> - if set to true, will also display the raw collected data). It also provides automatic detection of the “warmup period” for the data set (see next).</p>
 
