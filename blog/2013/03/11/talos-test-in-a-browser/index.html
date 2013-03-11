@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Operation: Smooth</title>
+  <title>Talos - test in a browser, noise detection - Operation: Smooth</title>
   <meta name="author" content="Avi Halachmi (:avih)">
 
   
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://avih.github.com/">
+  <link rel="canonical" href="http://avih.github.com/blog/2013/03/11/talos-test-in-a-browser/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -64,15 +64,12 @@
 </nav>
   <div id="main">
     <div id="content">
-      <div class="blog-index">
+      <div>
+<article class="hentry" role="article">
   
-  
-  
-    <article>
-      
   <header>
     
-      <h1 class="entry-title"><a href="/blog/2013/03/11/talos-test-in-a-browser/">Talos - Test in a Browser, Noise Detection</a></h1>
+      <h1 class="entry-title">Talos - Test in a Browser, Noise Detection</h1>
     
     
       <p class="meta">
@@ -90,14 +87,14 @@
 
 <time datetime="2013-03-11T11:31:00+02:00" pubdate data-updated="true">Mar 11<span>th</span>, 2013</time>
         
-         | <a href="/blog/2013/03/11/talos-test-in-a-browser/#disqus_thread">Comments</a>
+         | <a href="#disqus_thread">Comments</a>
         
       </p>
     
   </header>
 
 
-  <div class="entry-content"><p><a href="https://wiki.mozilla.org/Buildbot/Talos">Talos</a> is a performance tests framework used by Mozilla. It’s invoked on every checkin to the main code repository for early detection of performance regressions. You can find many interesting talos notes on <a href="https://elvis314.wordpress.com/">Joel Maher’s blog</a>.</p>
+<div class="entry-content"><p><a href="https://wiki.mozilla.org/Buildbot/Talos">Talos</a> is a performance tests framework used by Mozilla. It’s invoked on every checkin to the main code repository for early detection of performance regressions. You can find many interesting talos notes on <a href="https://elvis314.wordpress.com/">Joel Maher’s blog</a>.</p>
 
 <p>Talos tests are pretty simple - they perform some task within a browser, then report a completion duration (or a comma-separated list of those) via the <code>tpRecordTime</code> javascript talos call. Talos then logs and processes those values, tries to ignore the noisy bits, and comes up with an average and StdDev values (it also deploys a similar process over several runs of the same test) - which can then be compared to other runs of the same test on different versions/platforms of Firefox.</p>
 
@@ -155,68 +152,16 @@ Stddev from item NN to last:
 <p>Maybe if we deploy an automatic warmup detection system similar to the one described above (after it’s tuned and tested with a much wider types of results than just the frame intervals during scroll), we could have a double win - reduce the noise level of the results, AND record the warmup period required for each test. We could then watch this value over time, and if - for a specific test - the warmup period goes up, then it’s probably a regression, and vice verse.</p>
 
 </div>
-  
-  
 
 
-    </article>
-  
-  
-    <article>
+  <footer>
+    <p class="meta">
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/">Help Wanted - Slow Touchpad Scroll in Firefox?</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
   
 
+<span class="byline author vcard">Posted by <span class="fn">Avi Halachmi (:avih)</span></span>
 
-<time datetime="2013-02-28T19:33:00+02:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">Bug 829952</a> says that scrolling using the touchpad feels slow on some laptops.</p>
-
-<p>Turns out that it’s quite hard to provide a consistent scroll experience on the various platforms which Firefox supports, due to many laptop and touchpad manufacturers, different drivers, OS configurations etc. We could have provided some (or a lot of) configuration UI, but the best solution would be to get it as good as possible out of the box.</p>
-
-<p>And to do that, we need data - and you might be able to help.
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
       
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/28/initial-post/">- Hello World -</a></h1>
-    
-    
-      <p class="meta">
-        
 
 
 
@@ -228,37 +173,42 @@ Stddev from item NN to last:
   
 
 
-<time datetime="2013-02-28T07:13:00+02:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/02/28/initial-post/#disqus_thread">Comments</a>
-        
-      </p>
+<time datetime="2013-03-11T11:31:00+02:00" pubdate data-updated="true">Mar 11<span>th</span>, 2013</time>
+      
+
+
+    </p>
     
-  </header>
-
-
-  <div class="entry-content"><p>When your manager does your work <a href="http://taras.glek.net/blog/2013/02/22/snappy-number-51-smoothing-tab-animations/">for you</a>, it means something has gone wrong along the way. So here is me fixing it - finally I’ve setup a blog. You can read a bit about me <a href="/about">here</a>.</p>
-
-<p>Welcome aboard.</p>
-
-<p>Since I joined the performance team at Mozilla not long ago, I’ve been working on animation smoothness, starting with tab animation, but touching related subjects as well.</p>
-
-<p>In this space, I hope to provide interesting progress notes on this and related subjects.</p>
-
-<p>Stay tuned.</p>
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://avih.github.com/blog/2013/03/11/talos-test-in-a-browser/" data-via="" data-counturl="http://avih.github.com/blog/2013/03/11/talos-test-in-a-browser/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
 </div>
-  
-  
 
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/" title="Previous Post: Help wanted - Slow touchpad scroll in firefox?">&laquo; Help wanted - Slow touchpad scroll in firefox?</a>
+      
+      
+    </p>
+  </footer>
+</article>
 
-    </article>
-  
-  <div class="pagination">
-    
-    <a href="/blog/archives">Blog Archives</a>
-    
-  </div>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
+  </section>
+
+</div>
+
 <aside class="sidebar">
   
     <section>
@@ -288,6 +238,7 @@ Stddev from item NN to last:
   
 </aside>
 
+
     </div>
   </div>
   <footer role="contentinfo"><p>
@@ -302,7 +253,10 @@ Stddev from item NN to last:
       var disqus_shortname = 'mozilla-avih';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://avih.github.com/blog/2013/03/11/talos-test-in-a-browser/';
+        var disqus_url = 'http://avih.github.com/blog/2013/03/11/talos-test-in-a-browser/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
