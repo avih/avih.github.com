@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: vsync | Operation: Smooth]]></title>
+  <link href="http://avih.github.com/blog/categories/vsync/atom.xml" rel="self"/>
+  <link href="http://avih.github.com/"/>
+  <updated>2013-04-16T00:06:33+03:00</updated>
+  <id>http://avih.github.com/</id>
+  <author>
+    <name><![CDATA[Avi Halachmi (:avih)]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Tabstrip animation Project - Introduction]]></title>
+    <link href="http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/"/>
+    <updated>2013-04-14T18:37:00+03:00</updated>
+    <id>http://avih.github.com/blog/2013/04/14/tabstrip-project-intro</id>
+    <content type="html"><![CDATA[<p>I’ve had few slow weeks during which I attended some personal matters. Hopefully I’m back in full steam ahead again.</p>
+
+<p>(Ear <a href="http://www.drugs.com/cg/barotrauma-aftercare-instructions.html">Barotrauma</a> during plane landing is not fun, especially when it lasts for weeks, and I’m still recovering, but gladly, apparently there’s no permanent damage. I’m not perfect yet (I was!!! :p ), but hopefully the worse is behind me now).</p>
+
+<p>Here’s a summary of recent events.</p>
+
+<h2 id="tabstrip-animation-project">Tabstrip animation project</h2>
+
+<p>As part of the recent Performance team changes (<a href="http://taras.glek.net/blog/2013/03/27/snappy-number-55-snappy-evolution/">1</a>, <a href="http://lawrencemandel.com/2013/03/21/no-more-snappy-meetings-and-other-changes-from-the-snappy-team/">2</a>), I’m now the tech lead for the tabstrip animation project. It’ll require some additional coordinations and regular blog posts.</p>
+
+<p>The goal of the tabstrip animation project:</p>
+
+<p><em>Make tabstrip animations as smooth and as snappy as possible, both visually and perceptually, by identifying and removing bottlenecks, deficiencies, and perception issues. The ultimate goal here is 60 FPS on a recent Atom CPU on all platforms, with minimal delays</em>.</p>
+
+<p>So far, this work touched several different subjects:
+<!--more--></p>
+
+<ul>
+  <li>
+    <p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=826383">Infrastructure</a> and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=828097">telemetry</a> for tabstrip animation smoothness measurements. This infrastructure already proved very useful with the various subjects below. In general, good measurements allow much more concrete goals, feedback and regression detections. We should strive to use measurements wherever possible, while making sure the measurements are a good representation for the kind of performance which interests us.</p>
+  </li>
+  <li>
+    <p><em>Timing related improvements</em>. Timing is the essence of animation. It’s important for tabstrip animations and for Firefox in general to be able to present each frame at exactly the right time, or else the animation won’t be as smooth as it could be. This is an ongoing effort within Mozilla.</p>
+  </li>
+</ul>
+
+<p>Following Vladimir’s very useful <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=731974">timers change</a> which recently arrived to the release channel, there were few more issues remaining, mainly <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=590422#c21">timers averaging delay removal</a> which was a long standing bug which also affected tab animation and finally resolved recently, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=689418">vsync</a> synchronization (present frames in sync with the monitor refresh rate) which greatly affects perception of smoothness and is a sore issue since Firefox is now lagging behind Chrome and IE on this (preliminary <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427#c5">Windows vsync build</a>/patch), and finally, <a href="https://wiki.mozilla.org/Platform/GFX/OffMainThreadCompositing">OMTC</a> which aims at offloading some rendering/animation related tasks off the main thread, and which needs to integrate well with other timing related work.</p>
+
+<ul>
+  <li>
+    <p><em>Identifying and removal of relevant graphic bottlenecks</em>. Tabstrip animation (and animation in general) is limited by rendering speed. Any improvements here translate to possibly faster and smoother animation, especially on slow computers. We’ve already improved D2D accelerated tab animation by about 25% by <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=838758">improving the gradients cache system</a>, and we still have similar potential improvements with <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=764299">SVG raster caching</a>, and possibly other graphic bottlenecks.</p>
+  </li>
+  <li>
+    <p><em>Theme optimizations</em>. During the development of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=732583">Australis</a> theme, we’ve noticed that its tabs animate slower than the current theme. This was followed up by great <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=837885">ongoing</a> effort and attention from Mike Conley (<a href="http://mikeconley.ca/blog/2013/03/01/australis-curvy-tabs-more-progress/">good post</a>) and Matthew Noorenberghe to measure and improve tab animation speed with Australis. One of the results of this effort was replacing SVG usage with images, but we’d still like to get back to SVG, as it’s more elegant and it scales better for different sizes/DPI.</p>
+  </li>
+  <li>
+    <p><em>Browser issues</em> which affect tab animation. Even if the timing is great, there are no major GFX bottlenecks, and the theme is light to render, tab animation is still affected by implementations within the browser. E.g. the way it’s triggered (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=850163">sync or async</a>, delayed, etc), pages which render concurrently with animation and compete with it on resources (e.g. the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=843853">new tab</a> page) and possibly other similar issues. Tim Taubert from the Firefox team has been working on these issues.</p>
+  </li>
+  <li>
+    <p><em>Regression detection</em>. We’ve already identified an <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=845943">unoptimal talos scroll test</a> during the timer filter removal process, and posted an improvement. We should also add a similar <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=848358">tab animation regression test</a>. In general, it’s important that talos tests are useful, accurate, and are good representation of actual regressions which we care about. <a href="https://blog.mozilla.org/nfroyd/2013/03/25/perf-workweek-talos-discussion/">Nathan</a> is the performance team representative for talos issues, and I’ll help as much as I can.</p>
+  </li>
+</ul>
+
+<p>I’ll be posting regular progress reports on this subject.</p>
+]]></content>
+  </entry>
+  
+</feed>

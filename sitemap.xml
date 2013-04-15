@@ -10,11 +10,19 @@
     </url>
     <url>
         <loc>http://avih.github.com/blog/2013/03/11/talos-test-in-a-browser/</loc>
-        <lastmod>2013-03-11T15:04:25+02:00</lastmod>
+        <lastmod>2013-03-11T16:10:40+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/</loc>
+        <lastmod>2013-04-15T19:47:15+03:00</lastmod>
+    </url>
+    <url>
+        <loc>http://avih.github.com/blog/2013/04/15/tabstrip-animation-progress-vsync/</loc>
+        <lastmod>2013-04-15T19:16:04+03:00</lastmod>
     </url>
     <url>
         <loc>http://avih.github.com/blog/archives/</loc>
-        <lastmod>2013-03-11T15:04:25+02:00</lastmod>
+        <lastmod>2013-04-15T19:47:15+03:00</lastmod>
     </url>
     <url>
         <loc>http://avih.github.com/robots.txt</loc>
@@ -26,6 +34,6 @@
     </url>
     <url>
         <loc>http://avih.github.com/</loc>
-        <lastmod>2013-03-11T15:04:25+02:00</lastmod>
+        <lastmod>2013-04-15T19:47:15+03:00</lastmod>
     </url>
 </urlset>

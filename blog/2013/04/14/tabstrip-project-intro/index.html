@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Tabstrip animation Project - Introduction - Operation: Smooth</title>
+  <meta name="author" content="Avi Halachmi (:avih)">
+
+  
+  <meta name="description" content="I’ve had few slow weeks during which I attended some personal matters. Hopefully I’m back in full steam ahead again. (Ear Barotrauma during plane &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Operation: Smooth" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Asap' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Operation: Smooth</a></h1>
+  
+    <h2>Mozilla performance notes - a personal view</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:avih.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Tabstrip Animation Project - Introduction</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-14T18:37:00+03:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I’ve had few slow weeks during which I attended some personal matters. Hopefully I’m back in full steam ahead again.</p>
+
+<p>(Ear <a href="http://www.drugs.com/cg/barotrauma-aftercare-instructions.html">Barotrauma</a> during plane landing is not fun, especially when it lasts for weeks, and I’m still recovering, but gladly, apparently there’s no permanent damage. I’m not perfect yet (I was!!! :p ), but hopefully the worse is behind me now).</p>
+
+<p>Here’s a summary of recent events.</p>
+
+<h2 id="tabstrip-animation-project">Tabstrip animation project</h2>
+
+<p>As part of the recent Performance team changes (<a href="http://taras.glek.net/blog/2013/03/27/snappy-number-55-snappy-evolution/">1</a>, <a href="http://lawrencemandel.com/2013/03/21/no-more-snappy-meetings-and-other-changes-from-the-snappy-team/">2</a>), I’m now the tech lead for the tabstrip animation project. It’ll require some additional coordinations and regular blog posts.</p>
+
+<p>The goal of the tabstrip animation project:</p>
+
+<p><em>Make tabstrip animations as smooth and as snappy as possible, both visually and perceptually, by identifying and removing bottlenecks, deficiencies, and perception issues. The ultimate goal here is 60 FPS on a recent Atom CPU on all platforms, with minimal delays</em>.</p>
+
+<p>So far, this work touched several different subjects:
+<!--more--></p>
+
+<ul>
+  <li>
+    <p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=826383">Infrastructure</a> and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=828097">telemetry</a> for tabstrip animation smoothness measurements. This infrastructure already proved very useful with the various subjects below. In general, good measurements allow much more concrete goals, feedback and regression detections. We should strive to use measurements wherever possible, while making sure the measurements are a good representation for the kind of performance which interests us.</p>
+  </li>
+  <li>
+    <p><em>Timing related improvements</em>. Timing is the essence of animation. It’s important for tabstrip animations and for Firefox in general to be able to present each frame at exactly the right time, or else the animation won’t be as smooth as it could be. This is an ongoing effort within Mozilla.</p>
+  </li>
+</ul>
+
+<p>Following Vladimir’s very useful <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=731974">timers change</a> which recently arrived to the release channel, there were few more issues remaining, mainly <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=590422#c21">timers averaging delay removal</a> which was a long standing bug which also affected tab animation and finally resolved recently, <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=689418">vsync</a> synchronization (present frames in sync with the monitor refresh rate) which greatly affects perception of smoothness and is a sore issue since Firefox is now lagging behind Chrome and IE on this (preliminary <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427#c5">Windows vsync build</a>/patch), and finally, <a href="https://wiki.mozilla.org/Platform/GFX/OffMainThreadCompositing">OMTC</a> which aims at offloading some rendering/animation related tasks off the main thread, and which needs to integrate well with other timing related work.</p>
+
+<ul>
+  <li>
+    <p><em>Identifying and removal of relevant graphic bottlenecks</em>. Tabstrip animation (and animation in general) is limited by rendering speed. Any improvements here translate to possibly faster and smoother animation, especially on slow computers. We’ve already improved D2D accelerated tab animation by about 25% by <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=838758">improving the gradients cache system</a>, and we still have similar potential improvements with <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=764299">SVG raster caching</a>, and possibly other graphic bottlenecks.</p>
+  </li>
+  <li>
+    <p><em>Theme optimizations</em>. During the development of <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=732583">Australis</a> theme, we’ve noticed that its tabs animate slower than the current theme. This was followed up by great <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=837885">ongoing</a> effort and attention from Mike Conley (<a href="http://mikeconley.ca/blog/2013/03/01/australis-curvy-tabs-more-progress/">good post</a>) and Matthew Noorenberghe to measure and improve tab animation speed with Australis. One of the results of this effort was replacing SVG usage with images, but we’d still like to get back to SVG, as it’s more elegant and it scales better for different sizes/DPI.</p>
+  </li>
+  <li>
+    <p><em>Browser issues</em> which affect tab animation. Even if the timing is great, there are no major GFX bottlenecks, and the theme is light to render, tab animation is still affected by implementations within the browser. E.g. the way it’s triggered (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=850163">sync or async</a>, delayed, etc), pages which render concurrently with animation and compete with it on resources (e.g. the <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=843853">new tab</a> page) and possibly other similar issues. Tim Taubert from the Firefox team has been working on these issues.</p>
+  </li>
+  <li>
+    <p><em>Regression detection</em>. We’ve already identified an <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=845943">unoptimal talos scroll test</a> during the timer filter removal process, and posted an improvement. We should also add a similar <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=848358">tab animation regression test</a>. In general, it’s important that talos tests are useful, accurate, and are good representation of actual regressions which we care about. <a href="https://blog.mozilla.org/nfroyd/2013/03/25/perf-workweek-talos-discussion/">Nathan</a> is the performance team representative for talos issues, and I’ll help as much as I can.</p>
+  </li>
+</ul>
+
+<p>I’ll be posting regular progress reports on this subject.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Avi Halachmi (:avih)</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-14T18:37:00+03:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/animation/'>animation</a>, <a class='category' href='/blog/categories/tabstrip/'>tabstrip</a>, <a class='category' href='/blog/categories/vsync/'>vsync</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/" data-via="" data-counturl="http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/03/11/talos-test-in-a-browser/" title="Previous Post: Talos - test in a browser, noise detection">&laquo; Talos - test in a browser, noise detection</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2013/04/15/tabstrip-animation-progress-vsync/" title="Next Post: Tabstrip animation progress: vsync, newtab page rendering, Lightweight theme">Tabstrip animation progress: vsync, newtab page rendering, Lightweight theme &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/04/15/tabstrip-animation-progress-vsync/">Tabstrip animation progress: vsync, newtab page rendering, Lightweight theme</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/14/tabstrip-project-intro/">Tabstrip animation Project - Introduction</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/03/11/talos-test-in-a-browser/">Talos - test in a browser, noise detection</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/">Help wanted - Slow touchpad scroll in firefox?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/02/28/initial-post/">- Hello World -</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Avi Halachmi (:avih) -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'mozilla-avih';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/';
+        var disqus_url = 'http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
