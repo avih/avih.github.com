@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tabstrip | Operation: Smooth]]></title>
   <link href="http://avih.github.com/blog/categories/tabstrip/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-04-16T00:06:33+03:00</updated>
+  <updated>2013-04-18T18:32:06+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -20,13 +20,11 @@
     <id>http://avih.github.com/blog/2013/04/14/tabstrip-project-intro</id>
     <content type="html"><![CDATA[<p>I’ve had few slow weeks during which I attended some personal matters. Hopefully I’m back in full steam ahead again.</p>
 
-<p>(Ear <a href="http://www.drugs.com/cg/barotrauma-aftercare-instructions.html">Barotrauma</a> during plane landing is not fun, especially when it lasts for weeks, and I’m still recovering, but gladly, apparently there’s no permanent damage. I’m not perfect yet (I was!!! :p ), but hopefully the worse is behind me now).</p>
-
 <p>Here’s a summary of recent events.</p>
 
 <h2 id="tabstrip-animation-project">Tabstrip animation project</h2>
 
-<p>As part of the recent Performance team changes (<a href="http://taras.glek.net/blog/2013/03/27/snappy-number-55-snappy-evolution/">1</a>, <a href="http://lawrencemandel.com/2013/03/21/no-more-snappy-meetings-and-other-changes-from-the-snappy-team/">2</a>), I’m now the tech lead for the tabstrip animation project. It’ll require some additional coordinations and regular blog posts.</p>
+<p>As part of the recent Performance team changes (<a href="http://taras.glek.net/blog/2013/03/27/snappy-number-55-snappy-evolution/">1</a>, <a href="http://lawrencemandel.com/2013/03/21/no-more-snappy-meetings-and-other-changes-from-the-snappy-team/">2</a>), I’m now the tech lead for the tabstrip animation project. It’ll require some additional coordinations and regular blog posts, but otherwise, work continues as usual.</p>
 
 <p>The goal of the tabstrip animation project:</p>
 
