@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-05-06T14:34:26+03:00</updated>
+  <updated>2013-05-06T16:38:35+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -58,7 +58,7 @@
     <p>Get a clear priorities list for newtab slowdown.</p>
   </li>
   <li>
-    <p>Implement a regression test which could measure our discrete tab animation goals (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=828097">tab animation telemetry</a> is useful, but has lower resolution than we’d like), and give each a score. Still not sure if as a talos test, but right now talos appears to be the proper place for it.</p>
+    <p>Implement a <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=848358">regression test</a> which could measure our discrete tab animation goals (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=828097">tab animation telemetry</a> is useful, but has lower resolution than we’d like), and give each a score. Still not sure if as a talos test, but right now talos appears to be the proper place for it.</p>
   </li>
 </ul>
 
