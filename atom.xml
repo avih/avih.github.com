@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-05-06T14:29:44+03:00</updated>
+  <updated>2013-05-06T14:34:26+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -37,7 +37,7 @@
 
 <p>Apparently what happens is that the filter removal also hurts average timer intervals when high resolution timers are not enabled, and video decoding uses timers without making sure they’re in “high-res mode”. The fix was quick everyone’s happy.</p>
 
-<p>This also brought a new discussion about automatically enabling high-res timers according to some hueristics on the requested timeouts (and possibly also the request source). While it sounds useful, the main argument against it is that high-res timers have slightly higher power draw, and that it could be abused by content pages which use setTimeout(0) while what they actually want is “soon enough”, and therefore get much more frequent callbacks than required.</p>
+<p>This also brought a new discussion about automatically enabling high-res timers according to some heuristics on the requested timeouts (and possibly also the request source). While it sounds useful, the main argument against it is that high-res timers have slightly higher power draw, and that it could be abused by content pages which use setTimeout(0) while what they actually want is “soon enough”, and therefore get much more frequent callbacks than required.</p>
 
 <p>This discussion is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=590422#c60">still ongoing</a>, you’re welcome to contribute more factors to consider.</p>
 
