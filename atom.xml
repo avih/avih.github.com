@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-05-06T16:38:35+03:00</updated>
+  <updated>2013-05-06T17:41:34+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Tabstrip animation #3]]></title>
+    <title type="html"><![CDATA[Tabstrip animation progress #3]]></title>
     <link href="http://avih.github.com/blog/2013/05/06/tabstrip-animation-number-3/"/>
     <updated>2013-05-06T11:36:00+03:00</updated>
     <id>http://avih.github.com/blog/2013/05/06/tabstrip-animation-number-3</id>
@@ -66,7 +66,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Tabstrip animation progress: vsync, newtab page rendering, Lightweight theme]]></title>
+    <title type="html"><![CDATA[Tabstrip animation progress #2: vsync, newtab page rendering, Lightweight theme]]></title>
     <link href="http://avih.github.com/blog/2013/04/15/tabstrip-animation-progress-vsync/"/>
     <updated>2013-04-15T18:23:00+03:00</updated>
     <id>http://avih.github.com/blog/2013/04/15/tabstrip-animation-progress-vsync</id>
@@ -118,7 +118,7 @@
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Tabstrip animation Project - Introduction]]></title>
+    <title type="html"><![CDATA[Tabstrip animation Project #1 - Introduction]]></title>
     <link href="http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/"/>
     <updated>2013-04-14T18:37:00+03:00</updated>
     <id>http://avih.github.com/blog/2013/04/14/tabstrip-project-intro</id>
