@@ -9,7 +9,8 @@
   <meta name="author" content="Avi Halachmi (:avih)">
 
   
-  <meta name="description" content="Tabstrip animation - Progress #2 The previous post introduced the Tabstrip animation project, and some work which has been done so far. This post &hellip;">
+  <meta name="description" content="Quick update on recent progress. Vsync from a thread
+Following the first experimental vsync implementation on Windows (using GetVBlankInfo which is &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +67,87 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2013/05/06/tabstrip-animation-number-3/">Tabstrip Animation #3</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-06T11:36:00+03:00" pubdate data-updated="true">May 6<span>th</span>, 2013</time>
+        
+         | <a href="/blog/2013/05/06/tabstrip-animation-number-3/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Quick update on recent progress.</p>
+
+<h3 id="vsync-from-a-thread">Vsync from a thread</h3>
+<p>Following the first experimental <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">vsync implementation</a> on Windows (using GetVBlankInfo which is non-blocking and synchronous), I’ve been experimenting with another implementation which vlad suggested: Run a thread which uses WaitForVBlank (blocking until next vblank) and post the timing event to the main thread.</p>
+
+<p>The conclusions are <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427#c38">here</a>. In a nutshell: WaitForVBlank works nicely (when it works), but also blocks the main thread, and while some circumvention is possible (using sleep), it’s still far from ideal. Thanks goes (yet again) to Bas for helpful tips on Windows APIs and integration into the Layer manager.</p>
+
+<p>Since OMTC might integrate WaitForVBlank into its pipe more naturally, it was decided to land the original approach - which is very lite and reasonably working, especially when using the main/single monitor - and reconsider the other approach with OMTC.</p>
+
+<p>Expect vsync on Windows nightlies soon.</p>
+
+<h3 id="new-tab-previews-hurts-tab-animation">New tab previews hurts tab animation</h3>
+<p>That’s <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=843853">bug 843853</a>. I decided to put it on hold for now, as it appears that not enough resources can be directed towards it. It would have been nice, however, to see a more practical list of priorities - which more carefully takes resources into account. Hopefully, we’ll have such list soon.</p>
+
+<h3 id="timer-filter-removal-regressions">Timer filter removal regressions</h3>
+<p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=590422">Bug 590422</a> (remove averaging filter for timers - which probably hurts timing more than it helps) landed some time ago, but still rears its head. The most recent is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=866561">lost frames</a> while decoding video.</p>
+
+<p>Apparently what happens is that the filter removal also hurts average timer intervals when high resolution timers are not enabled, and video decoding uses timers without making sure they’re in “high-res mode”. The fix was quick everyone’s happy.</p>
+
+<p>This also brought a new discussion about automatically enabling high-res timers according to some hueristics on the requested timeouts (and possibly also the request source). While it sounds useful, the main argument against it is that high-res timers have slightly higher power draw, and that it could be abused by content pages which use setTimeout(0) while what they actually want is “soon enough”, and therefore get much more frequent callbacks than required.</p>
+
+<p>This discussion is <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=590422#c60">still ongoing</a>, you’re welcome to contribute more factors to consider.</p>
+
+<h3 id="tabstrip-animation-project-goals">Tabstrip animation project goals</h3>
+<p>There has been some discussion on refining the project goals, to make them both useful from a user perspective (rather than mostly synthetic bar) and also reasonably achievable. We feel comfortable with <a href="https://wiki.mozilla.org/Performance#Smooth_Tab_Animation">this definition</a>, which, in a nutshell, is:</p>
+
+<ul>
+  <li>Have Smooth enough (50FPS or more) animation during the last part of the animation.</li>
+  <li>Make sure this happens on some concrete cases we care about (such that newtab open, close a tab and get into a gmail tab, etc).</li>
+</ul>
+
+<h3 id="whats-next">What’s next?</h3>
+<ul>
+  <li>
+    <p>Land Windows vsync.</p>
+  </li>
+  <li>
+    <p>Get a clear priorities list for newtab slowdown.</p>
+  </li>
+  <li>
+    <p>Implement a regression test which could measure our discrete tab animation goals (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=828097">tab animation telemetry</a> is useful, but has lower resolution than we’d like), and give each a score. Still not sure if as a talos test, but right now talos appears to be the proper place for it.</p>
+  </li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -357,6 +439,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2013/05/06/tabstrip-animation-number-3/">Tabstrip animation #3</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/04/15/tabstrip-animation-progress-vsync/">Tabstrip animation progress: vsync, newtab page rendering, Lightweight theme</a>
       </li>
     
@@ -370,10 +456,6 @@
     
       <li class="post">
         <a href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/">Help wanted - Slow touchpad scroll in firefox?</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/02/28/initial-post/">- Hello World -</a>
       </li>
     
   </ul>
