@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-05-06T17:41:34+03:00</updated>
+  <updated>2013-05-31T05:54:51+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -12,6 +12,132 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Private Firefox Sync server in 5 minutes]]></title>
+    <link href="http://avih.github.com/blog/2013/05/31/private-firefox-sync-server-in-5-mins/"/>
+    <updated>2013-05-31T04:39:00+03:00</updated>
+    <id>http://avih.github.com/blog/2013/05/31/private-firefox-sync-server-in-5-mins</id>
+    <content type="html"><![CDATA[<p>Well, theoretically in 5 minutes.</p>
+
+<p>The official python server is at <a href="https://docs.services.mozilla.com/howtos/run-sync.html">here</a>. The instructions on this page are for setting up a simple 3rd party weave (Firefox sync) PHP server which is compatible with current Firefox 21 and nightlies as far as I can tell, and which I started using on my own systems as a replacement for the Mozilla sync server.</p>
+
+<p>I’m not associated with this server in any way, and I’m <em>not</em> a security expert. <strong>Use at your own risk</strong>.</p>
+
+<h2 id="the-short-version---with-sqlite">The short version - with sqlite:</h2>
+
+<ol>
+  <li>Have a web server with HTTPS and php5+sqlite (if self-signed cert, make sure to permanently accept it before Firefox sync setup).</li>
+  <li>Create a directory for weave (e.g. <code>/var/www/weave</code>), and put the files from <a href="https://github.com/balu-/FSyncMS">this repository</a>. Make sure the web server has write access to it (e.g. <code>sudo chown www-data /var/www/weave</code>).</li>
+  <li>Browse to <code>https://your.domain.com/weave/index.php</code> (sqlite selected by default), click <code>OK</code>.</li>
+  <li><strong>The server is now ready and operational</strong>. Sync URL is <code>https://your.domain.com/weave/index.php/</code> (<strong>note</strong> the trailing ‘/’).</li>
+  <li>Once an account was created after setting up sync from Firefox, you can disable further new accounts registrations at <code>settings.php</code> (new pairings with existing accounts will still work).</li>
+  <li>If using sqlite, make sure that <code>weave_db</code> is not accessible from outside (e.g. using <code>.htaccess</code>).</li>
+  <li>If required, to reset the server and delete the accounts: delete <code>weave_db</code> and <code>settings.php</code> at the weave directory (and go to step 3).
+<!-- more --></li>
+</ol>
+
+<h2 id="the-long-version">The long version</h2>
+<p>And other gotchas as encountered with Ubuntu 12.04 LTS. All notes on weave security were gathered from irc.mozilla.org#sync, and I hope I got them right. Thanks to <em>telliott</em>, <em>rnewman</em> and <em>witheld</em> for their help and patience.</p>
+
+<ol>
+  <li>Have a web server with HTTPS and php5+sqlite support.
+    <ul>
+      <li>HTTPS is not mandatory for Firefox sync, but highly recommended. Sync sends the account password in plain text to the server. This password can NOT be used to decript the synced data at the DB, but it does allow an attacker to login to this sync account and make modifications such as delete elements at the DB for this account. HTTPS prevents password snooping and further attacks on the server/DB.</li>
+      <li>Using self-signed certificate (snakeoil) will work for sync. However:
+        <ul>
+          <li>Any Firefox client which uses this server for sync should first permanently approve the certificate (e.g. by browsing to <code>https://your.domain.com</code> and adding the exception), preferably also verifying that the signature matches the server’s.</li>
+          <li>Instructions for setup of <a href="http://d.klwe.info/ubuntu-12-04-setting-up-apache2-and-ssl-with-self-signed-certificate/">Apache2 + HTTPS with self-signed certificate</a>.</li>
+          <li>Self-signed certificate for sync apparently <a href="https://github.com/balu-/FSyncMS/issues/3">doesn’t always work on Firefox for Android</a>.</li>
+        </ul>
+      </li>
+      <li>If required, add sqlite support to php. E.g. <code>sudo apt-get install php5-sqlite</code>.</li>
+    </ul>
+  </li>
+  <li>Create a directory for weave (e.g. <code>/var/www/weave</code>), and put the files from <a href="https://github.com/balu-/FSyncMS">this repo</a>
+    <ul>
+      <li>By default, if using sqlite, the DB will be created at the same directory with file name <code>weave_db</code>, and therefore the web-server will need write access to that dir. Also, the automatic setup will create a <code>settings.php</code> file at the same directory, which also requires write access (e.g. <code>sudo chown www-data /var/www/weave</code>).</li>
+      <li>If using manual setup (manually creating <code>settings.php</code>): If setting the sqlite DB file path elsewhere, or if using mysql, there’s no need for that dir to have write access (but still need write access to the sqlite DB file if using sqlite).</li>
+    </ul>
+  </li>
+  <li>Browse to <code>https://your.domain.com/weave/index.php</code> , select sqlite and press <code>OK</code> (the other option is mysql)
+    <ul>
+      <li>Once OK is clicked, a new file <code>settings.php</code> will be created which allows some configuration (disable new accounts registration, sqlite db file path, mysql credentials).</li>
+      <li>If sqlite was selected, the DB file will be created at the same directory as <code>weave_db</code>.</li>
+    </ul>
+  </li>
+  <li>You can now setup Sync in firefox: choose a custom server and enter the URL (note the trailing ‘/’): <code>https://your.domain.com/weave/index.php/</code>
+    <ul>
+      <li>To pair new devices, follow the normal procedure (no need to manually enter the custom URL on new devices - just use the 12 chars code and it’ll work).</li>
+    </ul>
+  </li>
+  <li>Note that the server is now public and anyone can create a new account on it by setting up Firefox sync with this server.
+    <ul>
+      <li>Edit <code>settings.php</code> if you wish to disable further new accounts registration (this doesn’t prevent pairing new devices on existing accounts).</li>
+    </ul>
+  </li>
+  <li>If using sqlite with default DB file path, then the DB file will be accessible via the web (<code>https://your.domain.com/weave/weave_db</code>). While the data at the DB is encrypted (and the account login password cannot be used to decrypt the data), it’s still highly recommended to make it inaccessible from the outside.
+    <ul>
+      <li>I used <code>.htaccess</code> to prevent access to everything but <code>index.php</code> at that directory, which works:</li>
+    </ul>
+  </li>
+</ol>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>.htaccess to block everything except index.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="c"><span class="line"><span class="n">Order</span> <span class="n">Deny</span><span class="p">,</span><span class="n">Allow</span>
+</span><span class="line"><span class="n">Deny</span> <span class="n">from</span> <span class="n">all</span>
+</span><span class="line"><span class="n">Allow</span> <span class="n">from</span> <span class="mf">127.0.0.1</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">Files</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="o">&gt;</span>
+</span><span class="line">    <span class="n">Order</span> <span class="n">Allow</span><span class="p">,</span><span class="n">Deny</span>
+</span><span class="line">    <span class="n">Allow</span> <span class="n">from</span> <span class="n">all</span>
+</span><span class="line"><span class="o">&lt;/</span><span class="n">Files</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<ul>
+  <li>If your Apache server doesn’t seem to read the <code>.htaccess</code> file, you might need to enable it, e.g. by adding to <code>/etc/apache2/httpd.conf</code> (empty by default):</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Enable .htaccess with Apache2</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="c"><span class="line"><span class="o">&lt;</span><span class="n">Directory</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">weave</span><span class="o">&gt;</span>
+</span><span class="line"><span class="n">AllowOverride</span> <span class="n">All</span>
+</span><span class="line"><span class="o">&lt;/</span><span class="n">Directory</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>And restarting apache. E.g. <code>sudo service apache2 restart</code></p>
+
+<ul>
+  <li>Alternatively (haven’t tried myself): move <code>weave_db</code> to a dir outside of wwwroot and edit <code>settings.php</code> accordingly.</li>
+  <li>I haven’t tried using mysql with this server.</li>
+</ul>
+
+<p>Good luck!</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Tabstrip #4]]></title>
+    <link href="http://avih.github.com/blog/2013/05/20/tabstrip-number-4/"/>
+    <updated>2013-05-20T09:41:00+03:00</updated>
+    <id>http://avih.github.com/blog/2013/05/20/tabstrip-number-4</id>
+    <content type="html"><![CDATA[<p>Unfortunately, too short update.</p>
+
+<h3 id="vsync">Vsync</h3>
+<ul>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427#c55">Bug 856427</a> is stubborn. Still got try failures. Still being worked on.</li>
+</ul>
+
+<h3 id="newtab-animation">Newtab animation</h3>
+<ul>
+  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=843853">Bug 843853</a> got higher priority. Work should resume soon.</li>
+</ul>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Tabstrip animation progress #3]]></title>

@@ -1,0 +1,356 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Private Firefox Sync server in 5 minutes - Operation: Smooth</title>
+  <meta name="author" content="Avi Halachmi (:avih)">
+
+  
+  <meta name="description" content="Well, theoretically in 5 minutes. The official python server is at here. The instructions on this page are for setting up a simple 3rd party weave ( &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://avih.github.com/blog/2013/05/31/private-firefox-sync-server-in-5-mins/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Operation: Smooth" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Asap' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Operation: Smooth</a></h1>
+  
+    <h2>Mozilla performance notes - a personal view</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:avih.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Private Firefox Sync Server in 5 Minutes</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-31T04:39:00+03:00" pubdate data-updated="true">May 31<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Well, theoretically in 5 minutes.</p>
+
+<p>The official python server is at <a href="https://docs.services.mozilla.com/howtos/run-sync.html">here</a>. The instructions on this page are for setting up a simple 3rd party weave (Firefox sync) PHP server which is compatible with current Firefox 21 and nightlies as far as I can tell, and which I started using on my own systems as a replacement for the Mozilla sync server.</p>
+
+<p>I’m not associated with this server in any way, and I’m <em>not</em> a security expert. <strong>Use at your own risk</strong>.</p>
+
+<h2 id="the-short-version---with-sqlite">The short version - with sqlite:</h2>
+
+<ol>
+  <li>Have a web server with HTTPS and php5+sqlite (if self-signed cert, make sure to permanently accept it before Firefox sync setup).</li>
+  <li>Create a directory for weave (e.g. <code>/var/www/weave</code>), and put the files from <a href="https://github.com/balu-/FSyncMS">this repository</a>. Make sure the web server has write access to it (e.g. <code>sudo chown www-data /var/www/weave</code>).</li>
+  <li>Browse to <code>https://your.domain.com/weave/index.php</code> (sqlite selected by default), click <code>OK</code>.</li>
+  <li><strong>The server is now ready and operational</strong>. Sync URL is <code>https://your.domain.com/weave/index.php/</code> (<strong>note</strong> the trailing ‘/’).</li>
+  <li>Once an account was created after setting up sync from Firefox, you can disable further new accounts registrations at <code>settings.php</code> (new pairings with existing accounts will still work).</li>
+  <li>If using sqlite, make sure that <code>weave_db</code> is not accessible from outside (e.g. using <code>.htaccess</code>).</li>
+  <li>If required, to reset the server and delete the accounts: delete <code>weave_db</code> and <code>settings.php</code> at the weave directory (and go to step 3).
+<!-- more --></li>
+</ol>
+
+<h2 id="the-long-version">The long version</h2>
+<p>And other gotchas as encountered with Ubuntu 12.04 LTS. All notes on weave security were gathered from irc.mozilla.org#sync, and I hope I got them right. Thanks to <em>telliott</em>, <em>rnewman</em> and <em>witheld</em> for their help and patience.</p>
+
+<ol>
+  <li>Have a web server with HTTPS and php5+sqlite support.
+    <ul>
+      <li>HTTPS is not mandatory for Firefox sync, but highly recommended. Sync sends the account password in plain text to the server. This password can NOT be used to decript the synced data at the DB, but it does allow an attacker to login to this sync account and make modifications such as delete elements at the DB for this account. HTTPS prevents password snooping and further attacks on the server/DB.</li>
+      <li>Using self-signed certificate (snakeoil) will work for sync. However:
+        <ul>
+          <li>Any Firefox client which uses this server for sync should first permanently approve the certificate (e.g. by browsing to <code>https://your.domain.com</code> and adding the exception), preferably also verifying that the signature matches the server’s.</li>
+          <li>Instructions for setup of <a href="http://d.klwe.info/ubuntu-12-04-setting-up-apache2-and-ssl-with-self-signed-certificate/">Apache2 + HTTPS with self-signed certificate</a>.</li>
+          <li>Self-signed certificate for sync apparently <a href="https://github.com/balu-/FSyncMS/issues/3">doesn’t always work on Firefox for Android</a>.</li>
+        </ul>
+      </li>
+      <li>If required, add sqlite support to php. E.g. <code>sudo apt-get install php5-sqlite</code>.</li>
+    </ul>
+  </li>
+  <li>Create a directory for weave (e.g. <code>/var/www/weave</code>), and put the files from <a href="https://github.com/balu-/FSyncMS">this repo</a>
+    <ul>
+      <li>By default, if using sqlite, the DB will be created at the same directory with file name <code>weave_db</code>, and therefore the web-server will need write access to that dir. Also, the automatic setup will create a <code>settings.php</code> file at the same directory, which also requires write access (e.g. <code>sudo chown www-data /var/www/weave</code>).</li>
+      <li>If using manual setup (manually creating <code>settings.php</code>): If setting the sqlite DB file path elsewhere, or if using mysql, there’s no need for that dir to have write access (but still need write access to the sqlite DB file if using sqlite).</li>
+    </ul>
+  </li>
+  <li>Browse to <code>https://your.domain.com/weave/index.php</code> , select sqlite and press <code>OK</code> (the other option is mysql)
+    <ul>
+      <li>Once OK is clicked, a new file <code>settings.php</code> will be created which allows some configuration (disable new accounts registration, sqlite db file path, mysql credentials).</li>
+      <li>If sqlite was selected, the DB file will be created at the same directory as <code>weave_db</code>.</li>
+    </ul>
+  </li>
+  <li>You can now setup Sync in firefox: choose a custom server and enter the URL (note the trailing ‘/’): <code>https://your.domain.com/weave/index.php/</code>
+    <ul>
+      <li>To pair new devices, follow the normal procedure (no need to manually enter the custom URL on new devices - just use the 12 chars code and it’ll work).</li>
+    </ul>
+  </li>
+  <li>Note that the server is now public and anyone can create a new account on it by setting up Firefox sync with this server.
+    <ul>
+      <li>Edit <code>settings.php</code> if you wish to disable further new accounts registration (this doesn’t prevent pairing new devices on existing accounts).</li>
+    </ul>
+  </li>
+  <li>If using sqlite with default DB file path, then the DB file will be accessible via the web (<code>https://your.domain.com/weave/weave_db</code>). While the data at the DB is encrypted (and the account login password cannot be used to decrypt the data), it’s still highly recommended to make it inaccessible from the outside.
+    <ul>
+      <li>I used <code>.htaccess</code> to prevent access to everything but <code>index.php</code> at that directory, which works:</li>
+    </ul>
+  </li>
+</ol>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>.htaccess to block everything except index.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+<span class="line-number">4</span>
+<span class="line-number">5</span>
+<span class="line-number">6</span>
+<span class="line-number">7</span>
+</pre></td><td class="code"><pre><code class="c"><span class="line"><span class="n">Order</span> <span class="n">Deny</span><span class="p">,</span><span class="n">Allow</span>
+</span><span class="line"><span class="n">Deny</span> <span class="n">from</span> <span class="n">all</span>
+</span><span class="line"><span class="n">Allow</span> <span class="n">from</span> <span class="mf">127.0.0.1</span>
+</span><span class="line"><span class="o">&lt;</span><span class="n">Files</span> <span class="n">index</span><span class="p">.</span><span class="n">php</span><span class="o">&gt;</span>
+</span><span class="line">    <span class="n">Order</span> <span class="n">Allow</span><span class="p">,</span><span class="n">Deny</span>
+</span><span class="line">    <span class="n">Allow</span> <span class="n">from</span> <span class="n">all</span>
+</span><span class="line"><span class="o">&lt;/</span><span class="n">Files</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<ul>
+  <li>If your Apache server doesn’t seem to read the <code>.htaccess</code> file, you might need to enable it, e.g. by adding to <code>/etc/apache2/httpd.conf</code> (empty by default):</li>
+</ul>
+
+<div class="bogus-wrapper"><notextile><figure class="code"><figcaption><span>Enable .htaccess with Apache2</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class="line-number">1</span>
+<span class="line-number">2</span>
+<span class="line-number">3</span>
+</pre></td><td class="code"><pre><code class="c"><span class="line"><span class="o">&lt;</span><span class="n">Directory</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">weave</span><span class="o">&gt;</span>
+</span><span class="line"><span class="n">AllowOverride</span> <span class="n">All</span>
+</span><span class="line"><span class="o">&lt;/</span><span class="n">Directory</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div>
+<p>And restarting apache. E.g. <code>sudo service apache2 restart</code></p>
+
+<ul>
+  <li>Alternatively (haven’t tried myself): move <code>weave_db</code> to a dir outside of wwwroot and edit <code>settings.php</code> accordingly.</li>
+  <li>I haven’t tried using mysql with this server.</li>
+</ul>
+
+<p>Good luck!</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Avi Halachmi (:avih)</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-31T04:39:00+03:00" pubdate data-updated="true">May 31<span>st</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://avih.github.com/blog/2013/05/31/private-firefox-sync-server-in-5-mins/" data-via="" data-counturl="http://avih.github.com/blog/2013/05/31/private-firefox-sync-server-in-5-mins/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/05/20/tabstrip-number-4/" title="Previous Post: Tabstrip #4">&laquo; Tabstrip #4</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/05/31/private-firefox-sync-server-in-5-mins/">Private Firefox Sync server in 5 minutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/20/tabstrip-number-4/">Tabstrip #4</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/06/tabstrip-animation-number-3/">Tabstrip animation progress #3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/15/tabstrip-animation-progress-vsync/">Tabstrip animation progress #2: vsync, newtab page rendering, Lightweight theme</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/14/tabstrip-project-intro/">Tabstrip animation Project #1 - Introduction</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Avi Halachmi (:avih) -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'mozilla-avih';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://avih.github.com/blog/2013/05/31/private-firefox-sync-server-in-5-mins/';
+        var disqus_url = 'http://avih.github.com/blog/2013/05/31/private-firefox-sync-server-in-5-mins/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
