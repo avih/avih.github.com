@@ -109,7 +109,8 @@
   <li><strong>The server is now ready and operational</strong>. Sync URL is <code>https://your.domain.com/weave/index.php/</code> (<strong>note</strong> the trailing ‘/’).</li>
   <li>Once an account was created after setting up sync from Firefox, you can disable further new accounts registrations at <code>settings.php</code> (new pairings with existing accounts will still work).</li>
   <li>If using sqlite, make sure that <code>weave_db</code> is not accessible from outside (e.g. using <code>.htaccess</code>).</li>
-  <li>If required, to reset the server and delete the accounts: delete <code>weave_db</code> and <code>settings.php</code> at the weave directory (and go to step 3).
+  <li>If required, to reset the server and delete the accounts: delete <code>weave_db</code> and <code>settings.php</code> at the weave directory (and go to step 3).</li>
+  <li>Migration to a new server: Unlink all devices (Tools&gt;Options&gt;Sync&gt;Unlink), setup sync on one device with the new server, pair the other devices normally. If you don’t wish to share all items (Addons/passwords/etc), make sure to click “sync Options” at the setup/pair dialogs since it resets to default more than expected.
 <!-- more --></li>
 </ol>
 
@@ -191,6 +192,22 @@
   <li>Alternatively (haven’t tried myself): move <code>weave_db</code> to a dir outside of wwwroot and edit <code>settings.php</code> accordingly.</li>
   <li>I haven’t tried using mysql with this server.</li>
 </ul>
+
+<ol>
+  <li>If required, to reset the server and delete the accounts
+    <ul>
+      <li>Delete <code>weave_db</code> and <code>settings.php</code> at the weave directory (and go to step 3).</li>
+    </ul>
+  </li>
+  <li>Migration to a new server
+    <ul>
+      <li>Unlink all devices (Tools&gt;Options&gt;Sync&gt;Unlink).</li>
+      <li>Setup sync on one device with the new server.</li>
+      <li>Pair the other devices normally.</li>
+      <li><strong>If you don’t wish to share all items</strong> (Addons/passwords/etc), make sure to click “sync Options” at the setup/pair dialogs since it resets to default more than expected.</li>
+    </ul>
+  </li>
+</ol>
 
 <p>Good luck!</p>
 </div>
