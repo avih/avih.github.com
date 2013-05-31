@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-05-31T06:02:51+03:00</updated>
+  <updated>2013-05-31T06:51:52+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -117,25 +117,6 @@
 </ul>
 
 <p>Good luck!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Tabstrip #4]]></title>
-    <link href="http://avih.github.com/blog/2013/05/20/tabstrip-number-4/"/>
-    <updated>2013-05-20T09:41:00+03:00</updated>
-    <id>http://avih.github.com/blog/2013/05/20/tabstrip-number-4</id>
-    <content type="html"><![CDATA[<p>Unfortunately, too short update.</p>
-
-<h3 id="vsync">Vsync</h3>
-<ul>
-  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427#c55">Bug 856427</a> is stubborn. Still got try failures. Still being worked on.</li>
-</ul>
-
-<h3 id="newtab-animation">Newtab animation</h3>
-<ul>
-  <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=843853">Bug 843853</a> got higher priority. Work should resume soon.</li>
-</ul>
 ]]></content>
   </entry>
   
