@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-05-31T06:51:52+03:00</updated>
+  <updated>2013-05-31T12:39:08+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -43,7 +43,7 @@
 <ol>
   <li>Have a web server with HTTPS and php5+sqlite support.
     <ul>
-      <li>HTTPS is not mandatory for Firefox sync, but highly recommended. Sync sends the account password in plain text to the server. This password can NOT be used to decript the synced data at the DB, but it does allow an attacker to login to this sync account and make modifications such as delete elements at the DB for this account. HTTPS prevents password snooping and further attacks on the server/DB.</li>
+      <li>HTTPS is not mandatory for Firefox sync, but highly recommended. Sync sends the account password in plain text to the server. This password can NOT be used to decrypt the synced data at the DB, but it does allow an attacker to login to this sync account and make modifications such as delete elements at the DB for this account. HTTPS prevents password snooping and further attacks on the server/DB.</li>
       <li>Using self-signed certificate (snakeoil) will work for sync. However:
         <ul>
           <li>Any Firefox client which uses this server for sync should first permanently approve the certificate (e.g. by browsing to <code>https://your.domain.com</code> and adding the exception), preferably also verifying that the signature matches the server’s.</li>
