@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-05-31T05:54:51+03:00</updated>
+  <updated>2013-05-31T06:01:34+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -20,7 +20,7 @@
     <id>http://avih.github.com/blog/2013/05/31/private-firefox-sync-server-in-5-mins</id>
     <content type="html"><![CDATA[<p>Well, theoretically in 5 minutes.</p>
 
-<p>The official python server is at <a href="https://docs.services.mozilla.com/howtos/run-sync.html">here</a>. The instructions on this page are for setting up a simple 3rd party weave (Firefox sync) PHP server which is compatible with current Firefox 21 and nightlies as far as I can tell, and which I started using on my own systems as a replacement for the Mozilla sync server.</p>
+<p>The official python server is <a href="https://docs.services.mozilla.com/howtos/run-sync.html">here</a>. The instructions on this page are for setting up a simple 3rd party weave (Firefox sync) PHP server which is compatible with current Firefox 21 and nightlies as far as I can tell, and which I started using on my own systems as a replacement for the Mozilla sync server.</p>
 
 <p>I’m not associated with this server in any way, and I’m <em>not</em> a security expert. <strong>Use at your own risk</strong>.</p>
 
