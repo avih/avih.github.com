@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Tabstrip #4 - Vsync, newtab, talos, paint starvation - Operation: Smooth</title>
+  <meta name="author" content="Avi Halachmi (:avih)">
+
+  
+  <meta name="description" content="I’ve been slightly behind with my blog updates and there has been some great progress recently, so this post covers a bit more than usual. Vsync &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://avih.github.com/blog/2013/06/10/tabstrip-4-vsync-and-newtab/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Operation: Smooth" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Asap' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Operation: Smooth</a></h1>
+  
+    <h2>Mozilla performance notes - a personal view</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:avih.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Tabstrip #4 - Vsync, Newtab, Talos, Paint Starvation</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-10T21:38:00+03:00" pubdate data-updated="true">Jun 10<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I’ve been slightly behind with my blog updates and there has been some great progress recently, so this post covers a bit more than usual.</p>
+
+<h3 id="vsync">Vsync</h3>
+
+<p>Vsync has finally <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">landed</a> on Windows Nightlies not long ago. This means that Firefox will now synchronize its paints with the actual refresh rate of the monitor (if available), which is essential for properly smooth animations. This will work (and is enabled by default) on Windows Vista and later with DWM enabled (“Aero” themes). This also works with WebGL content such as <a href="https://blog.mozilla.org/futurereleases/2013/05/02/epic-citadel-demo-shows-the-power-of-the-web-as-a-platform-for-gaming/">Epic Citadel</a> ( <a href="http://www.unrealengine.com/html5/">demo</a>).</p>
+
+<p>Without vsync, Firefox uses 60hz refresh rate by default, which works relatively decently with 60hz displays, but fails badly at displaying properly smooth animations on monitors with other refresh rates (50hz on quite a few laptop displays, 100hz monitors, etc).</p>
+
+<p>However, the current implementation synchronizes with the main display only, so if using a multi-monitor setup, Firefox windows on secondary monitors might not gain from this.</p>
+
+<p>You can control the refresh rate manually by modifying <code>layout.frame_rate</code> at <code>about:config</code> (and restart Firefox). The default value is <code>-1</code> which means “Use vsync if available or 60hz otherwise”. Any other integer value &gt; 0 will force that specific refresh rate.</p>
+
+<p>Naturally, if Firefox can’t animate specific content quickly enough to keep up with the designated rate, then the actual rate will be lower.</p>
+
+<h3 id="aboutnewtab">about:newtab</h3>
+
+<p><code>about:newtab</code> is the default page when opening a new empty tab - with the thumbnails of recently visited pages. It was <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=752839#c11">affecting tab animations badly</a>, to the point of displaying as little as a 3 frames slideshow on low-end systems while animating the tabstrip after pressing the <code>+</code> button to add a tab.</p>
+
+<p><em>Tim Taubert</em> from the Firefox team has done some extenssive work <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=843853">recently</a> on several bugs which fall into two categories:</p>
+
+<ul>
+  <li>
+    <p>Enable newtab <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=791670">preload by default</a>. Newtab preload means that Firefox prapares the newtab page in the background, such that when opening a new tab it’s already rendered and therefore could be quickly displayed with very little processing. It has been working for a while but disabled by default due to accessibility issues. <em>Tim</em> removed this blocker, as well as simplified the preload mechanism and made sure that background preload <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=875509">doesn’t happen during animation</a>. This landed about a week ago and newtab preload is now enabled by default on nigtlies.</p>
+  </li>
+  <li>
+    <p>Prevent unneccessary reflows of the newtab page. Reflow is the process of re-calculating the layout of the page, e.g. after window resize, and it’s relatively CPU intensive. Tim discovered that newtab causes <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=876374">unneccessary reflows</a> on several cases, some of them <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=875257">related to preload</a>. He fixed them and also added an automatic test to detect if new reflows are accidentally introduced over time.</p>
+  </li>
+</ul>
+
+<p>The result of all this work is that animating a new tab with the newtab page is now almost as smooth as opening a blank tab, with few further potential improvements to be worked on soon. Well done!</p>
+
+<h3 id="talos">Talos</h3>
+
+<p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=590422">Bug 590422</a> (remove timers averaging filter) landed more than two months ago and should greatly improve timers accuracy, but it caused few regressions which are still being worked on. Talos <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=845943">tscroll</a> was already modified as a result - which landed about 2 weeks ago, and recently <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=854746">tsvg regressions</a> from this bug were examined as well.</p>
+
+<p>As it turned out, tsvg was rendering SVG animations at 100-200ms intervals, and measuring/reporting the overall runtime as representative of SVG performance. At 4 of the 7 animation tests within the tsvg suite, more than 95% of the time was spent inside <code>setTimeout</code> with the browser completely idle. This resulted in tests which in practice represent the accuracy of timers more than anything else.</p>
+
+<p>To make sure the overall runtime represents actual SVG performance, we should iterate the animation frames as fast as possible. We could do this with <code>setTimeout(loop, 0)</code>, but since Firefox renders to screen at 60hz, and it’s usually smart enough to delay reflow calculations until it’s absolutely neccessary, we could only fully process one in few frames when the SVG iterations are quicker than 60Hz, and at tsvg they’re much quicker than that.</p>
+
+<p>To make sure each frame is fully processed on each iteration, we should therefore use <code>requestAnimationFrame</code> (fondly nicked <code>rAF</code>)- which makes sure that once we’re back at the callback, whatever layout changes which we introduced were already fully processed and flushed by Firefox. However, <code>rAF</code> iterates at 60hz by default (or vsync rate), which is usually not fast enough to stress our SVG tests. The solution is to set <code>layout.frame_rate</code> to a high enough value would cause Firefox to iterate and fully-process each frame as fast as possible. <em>Joel Maher</em> helps a lot with testing and deploying the new tsvg tests, and we hope to land it soon.</p>
+
+<p>Making tsvg iterate ASAP also brought us back to tscroll. The recent change of tscroll was to use <code>rAF</code> instead of <code>setTimeout</code> for scroll iterations. However, while it represents scroll smoothness under normal conditions, it doesn’t detect regressions with high-enough resolution, since Firefox isn’t actually being stressed and the scroll doesn’t limit our iteration frequency. But stressing the browser with ASAP iteration will lose the real-world simulation of normal refresh rates.</p>
+
+<p>We’re still <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=771326">considering this</a>, but it seems talos will eventually run tscroll twice: once @60hz to make sure we can keep up at real-world scenarios, and once with ASAP iterations to detect performance regressions at much higher resolutions.</p>
+
+<h3 id="paint-starvation">Paint starvation</h3>
+
+<p>While working on tsvg with ASAP iterations, we noticed that Firefox sometimes appears frozen for the entire animation - it only shows the last animation frame (typically less than 1 second). While this happened when <code>rAF</code> was set to iterate ASAP, we discovered that there are scenarios under perfectly normal conditions which would end in exactly the same symptom.</p>
+
+<p>This is now <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=880036">bug 880036</a>. It shows is that if, for some reason, Firefox can’t iterate frames as fast as it wants to (60hz by default), then it may spend too much time on these iteration and prevent other event types from being handled on time. The most noticeable one is the paint event, since it makes Firefox appear freezen, but possibly other events are starved as well.</p>
+
+<p>A patch which seems to fix the issue was already posted, but since this freeze appears to ‘fix’ itself after about 2s, we want to first understand this unfreeze mechanism, and possibly fix it instead of posting a patch to cover up for another bug.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Avi Halachmi (:avih)</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-06-10T21:38:00+03:00" pubdate data-updated="true">Jun 10<span>th</span>, 2013</time>
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://avih.github.com/blog/2013/06/10/tabstrip-4-vsync-and-newtab/" data-via="" data-counturl="http://avih.github.com/blog/2013/06/10/tabstrip-4-vsync-and-newtab/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/05/31/private-firefox-sync-server-in-5-mins/" title="Previous Post: Private Firefox Sync server in 5 minutes">&laquo; Private Firefox Sync server in 5 minutes</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/06/10/tabstrip-4-vsync-and-newtab/">Tabstrip #4 - Vsync, newtab, talos, paint starvation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/31/private-firefox-sync-server-in-5-mins/">Private Firefox Sync server in 5 minutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/06/tabstrip-animation-number-3/">Tabstrip animation progress #3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/15/tabstrip-animation-progress-vsync/">Tabstrip animation progress #2: vsync, newtab page rendering, Lightweight theme</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/14/tabstrip-project-intro/">Tabstrip animation Project #1 - Introduction</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Avi Halachmi (:avih) -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'mozilla-avih';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://avih.github.com/blog/2013/06/10/tabstrip-4-vsync-and-newtab/';
+        var disqus_url = 'http://avih.github.com/blog/2013/06/10/tabstrip-4-vsync-and-newtab/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
