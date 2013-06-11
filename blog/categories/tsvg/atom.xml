@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tsvg | Operation: Smooth]]></title>
   <link href="http://avih.github.com/blog/categories/tsvg/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-06-11T02:08:43+03:00</updated>
+  <updated>2013-06-11T13:41:18+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -22,7 +22,7 @@
 
 <h3 id="vsync">Vsync</h3>
 
-<p>Vsync has finally <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">landed</a> on Windows Nightlies not long ago. This means that Firefox will now synchronize its paints with the actual refresh rate of the monitor (if available), which is essential for properly smooth animations. This will work (and is enabled by default) on Windows Vista and later with DWM enabled (“Aero” themes). This also works with WebGL content such as <a href="https://blog.mozilla.org/futurereleases/2013/05/02/epic-citadel-demo-shows-the-power-of-the-web-as-a-platform-for-gaming/">Epic Citadel</a> ( <a href="http://www.unrealengine.com/html5/">demo</a>).</p>
+<p>Vsync has finally <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">landed</a> on Windows Nightlies not long ago. This means that Firefox will now synchronize its paints with the actual refresh rate of the monitor (if available), which is essential for properly smooth animations. This will work (and is enabled by default) on Windows Vista and later with DWM enabled (“Aero” themes). This also works with WebGL content such as <a href="https://blog.mozilla.org/futurereleases/2013/05/02/epic-citadel-demo-shows-the-power-of-the-web-as-a-platform-for-gaming/">Epic Citadel</a> (<a href="http://www.unrealengine.com/html5/">demo</a>).</p>
 
 <p>Without vsync, Firefox uses 60hz refresh rate by default, which works relatively decently with 60hz displays, but fails badly at displaying properly smooth animations on monitors with other refresh rates (50hz on quite a few laptop displays, 100hz monitors, etc).</p>
 
@@ -40,7 +40,7 @@
 
 <ul>
   <li>
-    <p>Enable newtab <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=791670">preload by default</a>. Newtab preload means that Firefox prepares the newtab page in the background, such that when opening a new tab it’s already rendered and therefore could be quickly displayed with very little processing. It has been working for a while but disabled by default due to accessibility issues. <em>Tim</em> removed this blocker, as well as simplified the preload mechanism and made sure that background preload <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=875509">doesn’t happen during animation</a>. This landed about a week ago and newtab preload is now enabled by default on nigtlies.</p>
+    <p>Enable newtab <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=791670">preload by default</a>. Newtab preload means that Firefox prepares the newtab page in the background, such that when opening a new tab it’s already rendered and therefore could be quickly displayed with very little processing. It has been working for a while but disabled by default due to accessibility issues. <em>Tim</em> removed this blocker, as well as simplified the preload mechanism and made sure that background preload <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=875509">doesn’t happen during animation</a>. This landed about a week ago and newtab preload is now enabled by default on nightlies.</p>
   </li>
   <li>
     <p>Prevent unnecessary reflows of the newtab page. Reflow is the process of re-calculating the layout of the page, e.g. after window resize, and it’s relatively CPU intensive. Tim discovered that newtab causes <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=876374">unnecessary reflows</a> on several cases, some of them <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=875257">related to preload</a>. He fixed them and also added an automatic test to detect if new reflows are accidentally introduced over time.</p>
@@ -55,19 +55,19 @@
 
 <p>As it turned out, tsvg was rendering SVG animations at 100-200ms intervals, and measuring/reporting the overall runtime as representative of SVG performance. At 4 of the 7 animation tests within the tsvg suite, more than 95% of the time was spent inside <code>setTimeout</code> with the browser completely idle. This resulted in tests which in practice represent the accuracy of timers more than anything else.</p>
 
-<p>To make sure the overall runtime represents actual SVG performance, we should iterate the animation frames as fast as possible. We could do this with <code>setTimeout(loop, 0)</code>, but since Firefox renders to screen at 60hz, and it’s usually smart enough to delay reflow calculations until it’s absolutely necessary, we could only fully process one in few frames when the SVG iterations are quicker than 60Hz, and at tsvg they’re much quicker than that.</p>
+<p>To make sure the overall runtime represents actual SVG performance, we should iterate the animation frames as fast as possible. We could do this with <code>setTimeout(loop, 0)</code>, but since Firefox renders to screen at 60hz, and it’s usually smart enough to delay reflow calculations until it’s absolutely necessary, we could end up fully processing only one in few frames when the SVG iterations are quicker than 60Hz, and at tsvg they’re much quicker than that.</p>
 
-<p>To make sure each frame is fully processed on each iteration, we should therefore use <code>requestAnimationFrame</code> (fondly nicked <code>rAF</code>)- which makes sure that once we’re back at the callback, whatever layout changes which we introduced were already fully processed and flushed by Firefox. However, <code>rAF</code> iterates at 60hz by default (or vsync rate), which is usually not fast enough to stress our SVG tests. The solution is to set <code>layout.frame_rate</code> to a high enough value would cause Firefox to iterate and fully-process each frame as fast as possible. <em>Joel Maher</em> helps a lot with testing and deploying the new tsvg tests, and we hope to land it soon.</p>
+<p>To make sure each frame is fully processed on each iteration, we should therefore use <code>requestAnimationFrame</code> (fondly nicked <code>rAF</code>) - which makes sure that once we’re back at the callback, whatever layout changes which we introduced were already fully processed and flushed by Firefox. However, <code>rAF</code> iterates at 60hz by default (or vsync rate), which is usually not fast enough to stress our SVG tests. The solution is to set <code>layout.frame_rate</code> to a high enough value (during these tests) which causes Firefox to iterate and fully-process each frame as fast as possible. <em>Joel Maher</em> helps a lot with testing and deploying the new tsvg tests, and we hope to land it soon.</p>
 
-<p>Making tsvg iterate ASAP also brought us back to tscroll. The recent change of tscroll was to use <code>rAF</code> instead of <code>setTimeout</code> for scroll iterations. However, while it represents scroll smoothness under normal conditions, it doesn’t detect regressions with high-enough resolution, since Firefox isn’t actually being stressed and the scroll doesn’t limit our iteration frequency. But stressing the browser with ASAP iteration will lose the real-world simulation of normal refresh rates.</p>
+<p>Making tsvg iterate ASAP also brought us back to tscroll. The recent change of tscroll was to use <code>rAF</code> instead of <code>setTimeout</code> for scroll iterations. However, while it represents scroll smoothness under normal conditions, it doesn’t detect small regressions - since Firefox isn’t actually being stressed and the scroll doesn’t limit our iteration frequency. But stressing the browser with ASAP iteration will lose the real-world simulation of normal refresh rates. So we don’t have a single approach to satisfy both of these needs.</p>
 
 <p>We’re still <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=771326">considering this</a>, but it seems talos will eventually run tscroll twice: once @60hz to make sure we can keep up at real-world scenarios, and once with ASAP iterations to detect performance regressions at much higher resolutions.</p>
 
 <h3 id="paint-starvation">Paint starvation</h3>
 
-<p>While working on tsvg with ASAP iterations, we noticed that Firefox sometimes appears frozen for the entire animation - it only shows the last animation frame (typically less than 1 second). While this happened when <code>rAF</code> was set to iterate ASAP, we discovered that there are scenarios under perfectly normal conditions which would end in exactly the same symptom.</p>
+<p>While working on tsvg with ASAP iterations, we noticed that Firefox sometimes appears frozen for the entire animation (typically less than 1 second) - it only shows the last animation frame. While this happened when <code>rAF</code> was set to iterate ASAP, we discovered that there are scenarios under perfectly normal conditions which would exhibit exactly the same symptom.</p>
 
-<p>This is now <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=880036">bug 880036</a>. It shows is that if, for some reason, Firefox can’t iterate frames as fast as it wants to (60hz by default), then it may spend too much time on these iteration and prevent other event types from being handled on time. The most noticeable one is the paint event, since it makes Firefox appear freezen, but possibly other events are starved as well.</p>
+<p>This is now <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=880036">bug 880036</a>. It shows is that if, for some reason, Firefox can’t iterate frames as fast as it wants to (60hz by default), then it may spend too much time on these iteration and prevent other event types from being handled on time. The most noticeable one is the paint event, since it makes Firefox appear frozen, but possibly other events are starved as well.</p>
 
 <p>A patch which seems to fix the issue was already posted, but since this freeze appears to ‘fix’ itself after about 2s, we want to first understand this unfreeze mechanism, and possibly fix it instead of posting a patch to cover up for another bug.</p>
 ]]></content>
