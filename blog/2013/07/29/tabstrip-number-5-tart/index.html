@@ -1,0 +1,338 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Tabstrip #5 - TART, talos stress, smooth scrolling - Operation: Smooth</title>
+  <meta name="author" content="Avi Halachmi (:avih)">
+
+  
+  <meta name="description" content="Talos stress
+Talos tsvg and tscroll are about to be replaced with tsvgx and tscrollx, respectively (bug 897054). The main difference is that the “x” &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://avih.github.com/blog/2013/07/29/tabstrip-number-5-tart/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="Operation: Smooth" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href='http://fonts.googleapis.com/css?family=Asap' rel='stylesheet' type='text/css'>
+
+  
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">Operation: Smooth</a></h1>
+  
+    <h2>Mozilla performance notes - a personal view</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:avih.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about">About me</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Tabstrip #5 - TART, Talos Stress, Smooth Scrolling</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T15:14:00+03:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h3 id="talos-stress">Talos stress</h3>
+<p>Talos <code>tsvg</code> and <code>tscroll</code> are about to be replaced with <code>tsvgx</code> and <code>tscrollx</code>, respectively (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=897054">bug 897054</a>). The main difference is that the “x” tests stress Firefox by iterating animations as fast as possible, AKA “ASAP mode”.</p>
+
+<p>The old tests were performing some animation and then report overall (or average per frame) duration. However, they were using intervals which were not stressing Firefox at all, making the results almost meaningless WRT svg/scroll performance, and rather mostly sensitive to timing changes.</p>
+
+<p>Stressing Firefox exposed some issues such as paint starvation (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=880036">bug 880036</a>).</p>
+
+<p>Hopefully the new tests will have better correlation to our performance. Joel Maher did (and still does) a lot of work on the Talos side of things with these new tests (a  l-o-t!)</p>
+
+<h3 id="tart---tab-animation-regression-test">TART - Tab Animation Regression Test</h3>
+
+<p>After previous work which went into improving tab animations in Firefox, It’s time to put it into Talos. TART is implemented as an addon which works either stand alone or from within Talos. It measures frames intervals during different animation cases, and it works equally well on mozilla-central and on the UX branch.</p>
+
+<p>Joel Maher did most of the talos side of things, and currently the addon awaits review.</p>
+
+<ul>
+  <li>TART tests animation on 3 main cases:
+    <ul>
+      <li>“simple” - open/close of about:blank.</li>
+      <li>“icon” - open/close of a blank html page with favicon and a long title.</li>
+      <li>“newtab” - open with and without newtab preload.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>“simple” is tested at DPI scaling of 1.0, “icon” at scaling of 1.0 and 2.0, and “newtab” at default scaling.</p>
+
+<ul>
+  <li>Each animation produces 3 result values:
+    <ul>
+      <li>“all” - Overall average interval.</li>
+      <li>“half” - Average interval over 50% of the designated duration - from the end of the animation backwards.</li>
+      <li>“error” - The difference between the designated duration to the actual one.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Typically, “half” is the value which corresponds to the stable part of the animation once it’s hopefully settled. Most tab animations have first frame (or few) which are longer than the rest, so the “all” value, while not meaningless, doesn’t tell the whole story.</p>
+
+<ul>
+  <li>Some issues which had to be resolved while working on TART:
+    <ul>
+      <li>Inactive tabs are throttled, so to get accurate timing (intervals, end event), the test is executed from the Chrome window (rather than from the tab itself).</li>
+      <li>At DPI scaling of 2.0 at the talos window size, Australis can’t open a second tab without shrinking the first (thus measures animation of more than one tab). Solution: keep the TART tab pinned.</li>
+      <li>On OS X, “ASAP mode” doesn’t work with OMTC. Solution for now: disable OMTC for TART.</li>
+      <li>On ASAP mode, mostly on OSX, paints can be starved (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=880036">bug 880036</a>). Solution: use a temporary pref to prevent this (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=884955">bug 884955</a>).</li>
+      <li>At DPI scaling of 2.0, Australis can only have 3 tabs before it starts overflowing the tabstrip (e.g. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=891450">bug 891450</a>). This made it very hard to test multi-tab shrink/expand in a comparable fashion on m-c and Australis, and eventually this test was dropped for TART v1.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>You can watch TART at <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=848358">bug 848358</a>. Other than a review, it also awaits <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=888899">bug 888899</a> which should enable “ASAP” (stress) mode on OS X as well.</p>
+
+<h3 id="absolute-scroll-smoothness-on-windows">Absolute scroll smoothness on windows</h3>
+
+<p>I was asked by <a href="http://taras.glek.net/">Taras</a> to look into scroll smoothness on windows. Apparently, even after vlad’s great <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=731974">timing improvement</a>, the timers <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=590422">filter removal</a> and making vsync on windows <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">work</a>, Firefox still almost never scrolls 100% smoothly on windows.</p>
+
+<p>I did some extensive research into scroll performance of Firefox and other browsers on various platforms, and posted the results at <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=894128">bug 894128</a>. You’ll also find there a a bookmarklet to test scroll performance on any browser.</p>
+
+<p>One interesting observation is that it’s very hard to programatically detect if the scroll is absolutely smooth. Frame intervals apparently don’t tell the whole story (though they are not meaningless), and neither their standard deviation. To judge if the scroll is 100% smooth, it has to be assessed visually.</p>
+
+<ul>
+  <li>Some interesting observations from this research:
+    <ul>
+      <li>On OS X, even with 50% perf per core (and half the cores as well) compared to a fast Windows system, Firefox scrolls much smoother than on Windows, even with OMTC off.</li>
+      <li>Firefox may occasionally degrade scroll for several frames for no apparent reason (the content is homogenous). GC/CC?</li>
+      <li>OMTC typically doubles the throughput on OS X. On windows OMTC is not yet mature enough to test this.</li>
+      <li>Very low intervals variance is <em>not</em> required for 100% smooth scroll (though IE and Chrome mostly manage very low variance compared to Firefox).</li>
+      <li>Looks like Chrome and IE use something like APZC during scroll. IE is especially exceptional and is able to practically never drop a frame even on extremely low-end HW (Atom z2760), and also almost never show blanks during scroll.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Jet has already shown interest in looking into it. Hopefully some day Firefox will scroll as smooth as it can get…</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Avi Halachmi (:avih)</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-29T15:14:00+03:00" pubdate data-updated="true">Jul 29<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/tart/'>TART</a>, <a class='category' href='/blog/categories/scroll/'>scroll</a>, <a class='category' href='/blog/categories/scrollx/'>scrollx</a>, <a class='category' href='/blog/categories/smooth/'>smooth</a>, <a class='category' href='/blog/categories/svgc/'>svgc</a>, <a class='category' href='/blog/categories/talos/'>talos</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://avih.github.com/blog/2013/07/29/tabstrip-number-5-tart/" data-via="" data-counturl="http://avih.github.com/blog/2013/07/29/tabstrip-number-5-tart/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2013/06/10/tabstrip-4-vsync-and-newtab/" title="Previous Post: Tabstrip #4 - Vsync, newtab, talos, paint starvation">&laquo; Tabstrip #4 - Vsync, newtab, talos, paint starvation</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2013/07/29/tabstrip-number-5-tart/">Tabstrip #5 - TART, talos stress, smooth scrolling</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/06/10/tabstrip-4-vsync-and-newtab/">Tabstrip #4 - Vsync, newtab, talos, paint starvation</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/31/private-firefox-sync-server-in-5-mins/">Private Firefox Sync server in 5 minutes</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/05/06/tabstrip-animation-number-3/">Tabstrip animation progress #3</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2013/04/15/tabstrip-animation-progress-vsync/">Tabstrip animation progress #2: vsync, newtab page rendering, Lightweight theme</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Avi Halachmi (:avih) -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'mozilla-avih';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://avih.github.com/blog/2013/07/29/tabstrip-number-5-tart/';
+        var disqus_url = 'http://avih.github.com/blog/2013/07/29/tabstrip-number-5-tart/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
