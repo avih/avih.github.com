@@ -4,7 +4,7 @@
   <title><![CDATA[Category: scroll | Operation: Smooth]]></title>
   <link href="http://avih.github.com/blog/categories/scroll/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2013-07-29T17:08:54+03:00</updated>
+  <updated>2013-08-06T19:31:18+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -27,9 +27,13 @@
 
 <p>Hopefully the new tests will have better correlation to our performance. Joel Maher did (and still does) a lot of work on the Talos side of things with these new tests (a  l-o-t!)</p>
 
+<p>There’s a more technical explanation on this <a href="https://groups.google.com/forum/#!topic/mozilla.dev.platform/RICw5SJhNMo">dev.platform post</a>.</p>
+
 <h3 id="tart---tab-animation-regression-test">TART - Tab Animation Regression Test</h3>
 
 <p>After previous work which went into improving tab animations in Firefox, It’s time to put it into Talos. TART is implemented as an addon which works either stand alone or from within Talos. It measures frames intervals during different animation cases, and it works equally well on mozilla-central and on the UX branch.</p>
+
+<p>TART uses ASAP mode to iterate animation with unlimited frame rate, thus able to expose differences even if under normal conditions it would have been limited to 60Hz.</p>
 
 <p>Joel Maher did most of the talos side of things, and currently the addon awaits review.</p>
 
