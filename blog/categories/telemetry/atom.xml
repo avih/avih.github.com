@@ -4,7 +4,7 @@
   <title><![CDATA[Category: telemetry | Operation: Smooth]]></title>
   <link href="http://avih.github.com/blog/categories/telemetry/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-01-10T22:29:57+02:00</updated>
+  <updated>2015-01-10T22:50:03+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -18,7 +18,7 @@
     <link href="http://avih.github.com/blog/2015/01/10/the-simple-story-of-activeticks-telemetry/"/>
     <updated>2015-01-10T21:33:00+02:00</updated>
     <id>http://avih.github.com/blog/2015/01/10/the-simple-story-of-activeticks-telemetry</id>
-    <content type="html"><![CDATA[<p>Our story begins with a fair request: let’s copy the activeTicks value which we have for Firefox-Health-Report - also to Telemetry.</p>
+    <content type="html"><![CDATA[<p>Our story begins with a fair request: let’s copy the activeTicks value which we have for Firefox-Health-Report - also to Telemetry, and so <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1106122">bug 1106122</a> was born.</p>
 
 <p>Now, activeTicks is quite simple - it counts the duration a user has been interacting with Firefox. It’s part of the Firefox-Health-Report (FHR), but since it would be super useful to correlate this value with other telemetry values (such as number of hangs, etc), and since Telemetry and FHR live on different Clouds, we wanted to have a copy of this number also at telemetry. Fair enough.</p>
 
