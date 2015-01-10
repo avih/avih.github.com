@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: telemetry | Operation: Smooth]]></title>
+  <link href="http://avih.github.com/blog/categories/telemetry/atom.xml" rel="self"/>
+  <link href="http://avih.github.com/"/>
+  <updated>2015-01-10T22:29:57+02:00</updated>
+  <id>http://avih.github.com/</id>
+  <author>
+    <name><![CDATA[Avi Halachmi (:avih)]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[The simple story of activeTicks telemetry]]></title>
+    <link href="http://avih.github.com/blog/2015/01/10/the-simple-story-of-activeticks-telemetry/"/>
+    <updated>2015-01-10T21:33:00+02:00</updated>
+    <id>http://avih.github.com/blog/2015/01/10/the-simple-story-of-activeticks-telemetry</id>
+    <content type="html"><![CDATA[<p>Our story begins with a fair request: let’s copy the activeTicks value which we have for Firefox-Health-Report - also to Telemetry.</p>
+
+<p>Now, activeTicks is quite simple - it counts the duration a user has been interacting with Firefox. It’s part of the Firefox-Health-Report (FHR), but since it would be super useful to correlate this value with other telemetry values (such as number of hangs, etc), and since Telemetry and FHR live on different Clouds, we wanted to have a copy of this number also at telemetry. Fair enough.</p>
+
+<p>I found the activeTicks code and played with it a bit to understand how it works. It turns out to simply count the number of “time units” (5s) at which the user moves the mouse over Firefox or otherwise interacted with it. There’s only one place at the code which counts this value, and it’s at <code>services/datareporting/sessions.jsm</code>. Great - this appears to be a simple task then.
+<!-- more -->
+While not strictly related to our story, I also found out that on Windows systems - it incorrectly kept counting also when the mouse pointer hovers Firefox even if the user is away from the computer. Georg Fritzsche, who maintains the data reporting modules took it and then also handled the request to keep both the “old” and the “fixed” values reported in parallel for a while - to better understand the relation between them. That story is on <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1107779">bug 1107779</a> and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1107782">bug 1107782</a>.</p>
+
+<p>Back to our story.</p>
+
+<p>Now, Telemetry mostly holds histograms - for which it has a decent API, but this activeTicks value is a plain scalar which doesn’t really fit nicely into a histogram. Telemetry also happens to have a “Simple Measurements” section which holds various values - most of them are scalars (such as various startup times, number of maximum concurrent threads, etc), but also some JSON strings which are compound UI related stuff, etc.</p>
+
+<p>You can view the simple measurements values if you enter <code>about:telemetry</code> at the URL bar of Firefox and expand the SimpleMeasurements section.</p>
+
+<p>Unfortunately, simple measurements is a bit of a hack. It doesn’t have an API, and each module which reports a simple measurement value also implements the interfacing with it. Also unfortunate - interfacing with it from the code which counts activeTicks was not straight forward.</p>
+
+<p>So I looked a bit more on types of telemetry values and then I noticed <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Performance/Adding_a_new_Telemetry_probe#Choosing_a_Histogram_Type">Count Histograms</a>. The docs were a bit sparse, but it was being tested and seemed to work well when I experimented with it, it was designed to hold a single value, and best of all - has an API which fits activeTicks perfectly: myHistogram.add(). Simple counting is exactly what we need! Did I mention it works?</p>
+
+<ul>
+  <li><strong>Patch v1</strong>: bullet-proof single line of code which increments a telemetry count whenever activeTicks is incremented for FHR.</li>
+</ul>
+
+<p><strong>Bump v1</strong>: while a count histogram has an almost-perfect semantic fit and a working API for our needs, apparently the telemetry dashboard currently doesn’t display count histograms as nicely or as usefully as it does for simple measurements.</p>
+
+<p>Since we’re in a bit of a hurry with this, and since fixing the telemetry dashboard is likely to be a longer path, after some discussion we decided to use simple measurements after all - a fair request considering the factors.</p>
+
+<p>But due to the lack of simple measurements API - instead of using the API right where activeTicks is incremented, it was suggested to collect the value where the telemetry values were collected - similar to some of the other simple measurements values.</p>
+
+<p>However, since this part of the code doesn’t have an obvious interface to the SessionRecorder module (an object which exposes the activeTicks value and is an instance which the datareporting service - DRS - holds), it was suggested to simply take the preference value which counts activeTicks - since the only thing which incrementing activeTicks does is updating this pref.</p>
+
+<p>While a bit hacky, it’s still quite safe, and it was suggested that such approach would still get approved. Fair enough.</p>
+
+<ul>
+  <li><strong>Patch v2</strong>: relatively safe implementation which - when collecting the simple measurements telemetry values - also collects the activeTicks preference value if FHR is enabled.</li>
+</ul>
+
+<p><strong>Bump v2</strong>: the module owner isn’t happy to “bypass the FHR API”, but since such API didn’t exist, it was suggested to add an API. A fair request considering that it’s only a single function which exposes the SessionRecorder instance of the datareporting service.</p>
+
+<ul>
+  <li><strong>Patch v3</strong>:
+    <ul>
+      <li>add an API to the DRS which exposes the SessionRecorder instance - if it has one (it may not have one if a mostly-unused preference disables FHR).</li>
+      <li>still relatively safe: if the DRS has a SessionRecorder instance, use its activeTicks getter (which always existed), else, report an activeTicks value of -1.</li>
+    </ul>
+  </li>
+</ul>
+
+<p><strong>Bump v3</strong>: while the patch was quite safe, it was preferred to also have some “basic-coverage test” for this new mechanism. A very fair request.</p>
+
+<p>Unfortunately, the owner was unavailable for clarifications, but nevertheless, I evaluated what might fail, concluded that only the API could fail, and wrote a new xpcshell test which covers several cases of this new API.</p>
+
+<ul>
+  <li>
+    <p><strong>Bump v4</strong>. Apparently I misinterpreted the request, and it was preferred to have more of a unit/black-box test where the telemetry payload is tested to contain -1 or actual activeTicks value - according to various cases, and it was suggested that we could add that to an existing test which already tests the telemetry payload - <code>test_TelemetryPing.js</code> . A fair request - black-box tests are good, and enhancing an existing test sounds reasonable.</p>
+  </li>
+  <li>
+    <p><strong>Bump v5</strong>: Turns out that while the code itself is quite safe, it’s not trivial to create a case which ends up with activeTicks as -1 since it only happens when the DRS is present but FHR is completely disabled - which doesn’t happen at the code by default.</p>
+  </li>
+</ul>
+
+<p>Still, it was deemed important to test this -1 case, and after several failed attempts to initialize the DRS later at the test (in order to check the payload before the DRS instantiates SessionRecorder - which should end up with activeTicks==-1), we came up with a “solution”: Let’s initialize the datareporting service twice!</p>
+
+<p>First we’ll set this rarely-used preference to disable FHR, init the DRS, get a telemetry payload and check that it has activeTicks==-1, then restore the FHR pref, re-initialize the DRS (which luckily doesn’t do much - but does instantiates SessionRecorder according to this pref) - and then continue the test as usual.</p>
+
+<p>And the patch lands.</p>
+
+<ul>
+  <li>
+    <p><strong>Bump v6</strong>: and gets backed out for failure on some Android systems - which apparently are not compiled with the datareporting service and as a result part of the new test which uses it throws an exception. Whoops. My bad.</p>
+  </li>
+  <li>
+    <p><strong>Patch v7</strong>: Fix it, do a try push with xpcshell tests on every platform I could select on trychooser - we’re green! re-land.</p>
+  </li>
+</ul>
+
+<p><strong>Bump v8</strong>: a day goes by, and it turns out the new test fails for Thunderbird, and the try-push didn’t cover Thunderbird. Apparently Thunderbird does have the datareporting service, but it doesn’t have the rarely-used FHR preference, and so when we try to read the pref initially such that we can restore its value later - it throws an exception.</p>
+
+<p>Clone and build Thunderbird. Run this single test to check out what happens there.</p>
+
+<p>The test doesn’t run. Apparently running xpcshell tests with Thunderbird works a bit differently than Firefox.</p>
+
+<p>Search for docs, find docs, try again. Doesn’t work - I can’t run only this single test. I did manage to run all the xpcshell tests, but after about 15 mins where they were still running (and didn’t get to “my” test yet) I decided this is not practical and aborted.</p>
+
+<p>Asked around, didn’t get too far, started experimenting with test invocations, found out how to invoke-a-Thunderbird-xpcshell-test-which-resides-at-the-mozilla-central-repository-copy-which-Thunderbird-depends-on, updated the wiki with this missing info (need to run from within the Thunderbird obj dir but with the test path relative to the m-c repo rather than relative to the Thunderbird repo).</p>
+
+<p><strong>Back to the test</strong>. Added some code to also test the case where the FHR preference doesn’t exist and expect activeTicks==-1 on this case. Run the test. Fails. It seems that while the preference doesn’t exist, the DRS still instantiates SessionRecorder, and activeTicks actually ends up as working - but the test expected it to have -1 since the FHR pref doesn’t exist.</p>
+
+<p>Examined the DRS code - it reads the preference with a fallback to true, so it ends up with SessionRecorder and working activeTicks also when the pref doesn’t exist.</p>
+
+<p>Hmm…</p>
+
+<p>Falling back to true when the FHR-enabled pref doesn’t exist is a bit of a dodgy logic (even if it shouldn’t happen in practice), and I don’t like to duplicate logic, and especially not dodgy ones. But I need this logic at the test in order to know what kind of activeTicks value to expect on every platform which the test runs on.</p>
+
+<p>I could expose this logic as yet another API of the datareporting service, and only use it at the test, but then who knows who might use it later and for what.</p>
+
+<p>Or I could change the logic to be more reasonable and don’t instantiate SessionRecorder if the pref doesn’t exist, but I wouldn’t dare do that since I have no clue which other parts of the code rely on this behaviour. I need a solution…</p>
+
+<ul>
+  <li><strong>Patch v8</strong>: duplicate that logic at the test, add a comment on both places where this logic is implemented, and add a small safeguard at the test to cover some of these assumptions which the test now makes.</li>
+</ul>
+
+<p>This seems to work locally for both Thunderbird and Firefox for desktop.</p>
+
+<p>Another try-push on all platforms with xpcshell tests to make sure everything still works everywhere.</p>
+
+<p>Start this blog posts while the tests are running. They just turned out all green, ask a review for the new patch. Yay!</p>
+
+<ul>
+  <li><strong>Summary (for now):</strong>
+    <ul>
+      <li><strong>Where we started</strong>:
+        <ul>
+          <li>A single bullet proof line of code which increases a telemetry count whenever FHR increases activeTicks.</li>
+        </ul>
+      </li>
+      <li><strong>Where we are</strong> following several very reasonable incremental requests, and some days later:
+        <ul>
+          <li>A fairly safe new API for the datareporting service to expose SessionRecorder.</li>
+          <li>A fairly safe code which uses this API when telemetry pings are collected.</li>
+          <li>A fairly delicate and hacky test which:
+            <ul>
+              <li>Initializes the datareporting service twice.</li>
+              <li>Duplicates dodgy internal logic which the actual code doesn’t care about.</li>
+              <li>Has logic for combinations of the DRS and FHR-enabled pref which the actual code doesn’t care about, and probably nothing cares about - except for this test.</li>
+              <li>Mini test-self-test to validate some of these assumptions.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<p>It’s probably a safe bet to say that the test will break before the code which it tests breaks. This can’t be a good thing…</p>
+
+<p>There are probably few junctions where we could have taken a different path and possibly end up with better/simpler/safer/smaller code, and yet, this is where it stands now.</p>
+
+<p>Moral? Not sure. All the requests were reasonable and each step kinda makes sense on its own. Maybe we should have done the right thing (TM) by keeping the first patch and fixing the telemetry dashboard instead? ;)</p>
+
+<p>Easy to say in retrospective though, when we see how it evolved and which thing led to what.</p>
+
+<p>But hey, we did end up with some more useful info at the <a href="https://developer.mozilla.org/en-US/docs/MailNews_xpcshell-tests#Workaround_for_mach_problems">Thunderbird-xpcshell-tests</a> wiki page!</p>
+]]></content>
+  </entry>
+  
+</feed>

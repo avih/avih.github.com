@@ -9,8 +9,7 @@
   <meta name="author" content="Avi Halachmi (:avih)">
 
   
-  <meta name="description" content="Talos stress
-Talos tsvg and tscroll are about to be replaced with tsvgx and tscrollx, respectively (bug 897054). The main difference is that the “x” &hellip;">
+  <meta name="description" content="Our story begins with a fair request: let’s copy the activeTicks value which we have for Firefox-Health-Report - also to Telemetry. Now, activeTicks &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -67,6 +66,52 @@ Talos tsvg and tscroll are about to be replaced with tsvgx and tscrollx, respect
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/01/10/the-simple-story-of-activeticks-telemetry/">The Simple Story of activeTicks Telemetry</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-10T21:33:00+02:00" pubdate data-updated="true">Jan 10<span>th</span>, 2015</time>
+        
+         | <a href="/blog/2015/01/10/the-simple-story-of-activeticks-telemetry/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Our story begins with a fair request: let’s copy the activeTicks value which we have for Firefox-Health-Report - also to Telemetry.</p>
+
+<p>Now, activeTicks is quite simple - it counts the duration a user has been interacting with Firefox. It’s part of the Firefox-Health-Report (FHR), but since it would be super useful to correlate this value with other telemetry values (such as number of hangs, etc), and since Telemetry and FHR live on different Clouds, we wanted to have a copy of this number also at telemetry. Fair enough.</p>
+
+<p>I found the activeTicks code and played with it a bit to understand how it works. It turns out to simply count the number of “time units” (5s) at which the user moves the mouse over Firefox or otherwise interacted with it. There’s only one place at the code which counts this value, and it’s at <code>services/datareporting/sessions.jsm</code>. Great - this appears to be a simple task then.
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2015/01/10/the-simple-story-of-activeticks-telemetry/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -701,6 +746,10 @@ Talos tsvg and tscroll are about to be replaced with tsvgx and tscrollx, respect
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/01/10/the-simple-story-of-activeticks-telemetry/">The simple story of activeTicks telemetry</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2013/07/29/tabstrip-number-5-tart/">Tabstrip #5 - TART, talos stress, smooth scrolling</a>
       </li>
     
@@ -714,10 +763,6 @@ Talos tsvg and tscroll are about to be replaced with tsvgx and tscrollx, respect
     
       <li class="post">
         <a href="/blog/2013/05/06/tabstrip-animation-number-3/">Tabstrip animation progress #3</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/04/15/tabstrip-animation-progress-vsync/">Tabstrip animation progress #2: vsync, newtab page rendering, Lightweight theme</a>
       </li>
     
   </ul>
@@ -734,7 +779,7 @@ Talos tsvg and tscroll are about to be replaced with tsvgx and tscrollx, respect
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Avi Halachmi (:avih) -
+  Copyright &copy; 2015 - Avi Halachmi (:avih) -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
