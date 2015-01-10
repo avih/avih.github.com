@@ -99,8 +99,9 @@
 <p>Now, activeTicks is quite simple - it counts the duration a user has been interacting with Firefox. It’s part of the Firefox-Health-Report (FHR), but since it would be super useful to correlate this value with other telemetry values (such as number of hangs, etc), and since Telemetry and FHR live on different Clouds, we wanted to have a copy of this number also at telemetry. Fair enough.</p>
 
 <p>I found the activeTicks code and played with it a bit to understand how it works. It turns out to simply count the number of “time units” (5s) at which the user moves the mouse over Firefox or otherwise interacted with it. There’s only one place at the code which counts this value, and it’s at <code>services/datareporting/sessions.jsm</code>. Great - this appears to be a simple task then.
-<!-- more -->
-While not strictly related to our story, I also found out that on Windows systems - it incorrectly kept counting also when the mouse pointer hovers Firefox even if the user is away from the computer. Georg Fritzsche, who maintains the data reporting modules took it and then also handled the request to keep both the “old” and the “fixed” values reported in parallel for a while - to better understand the relation between them. That story is on <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1107779">bug 1107779</a> and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1107782">bug 1107782</a>.</p>
+<!-- more --></p>
+
+<p>While not strictly related to our story, I also found out that on Windows systems - it incorrectly kept counting also when the mouse pointer hovers Firefox even if the user is away from the computer. Georg Fritzsche, who maintains the data reporting modules took it and then also handled the request to keep both the “old” and the “fixed” values reported in parallel for a while - to better understand the relation between them. That story is on <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1107779">bug 1107779</a> and <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1107782">bug 1107782</a>.</p>
 
 <p>Back to our story.</p>
 
