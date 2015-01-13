@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=windows-1252">
+
+<script>
+var timeToDie = 0; // In ms. 0 for never (reload to reset)
+
+var stats = {};
+var counts = {};
+function $(id) { return document.getElementById(id); }
+
+var lastDisplay = "";
+function updateStatsDisplay()
+{
+  var text = "UA: " + navigator.userAgent + "<br/>-----------------<br/>";
+  text += "pageYOffset: " + window.pageYOffset + "<br/>";
+  text += "<b>Accumulated:</b><br/>";
+  for (var i in stats) {
+    text +=      "Count: " + counts[i]
+             +   ", Sum: " + stats[i].toFixed(1)
+             + ", Event: " + i
+             + "<br/>";
+  }
+  if (text != lastDisplay) {
+    $("accumulation").innerHTML = text;
+  }
+  
+  lastDisplay = text;
+}
+
+function accumulate(eventType, propId, delta)
+{
+  if (!delta) {
+    return;
+  }
+
+  var id = eventType + "." + propId;
+  if (!stats[id]) {
+    stats[id] = 0;
+    counts[id] = 0;
+  }
+  stats[id] += delta;
+  counts[id]++;
+  updateStatsDisplay();
+
+  if (timeToDie) {
+    setTimeout(function () {
+      stats[id] -= delta;
+      counts[id]--;
+      updateStatsDisplay();
+    }, timeToDie);
+  }
+}
+
+function initPage()
+{
+  setTimeout(function() { // some browsers prevent scroll on load event
+    window.scroll(0,0);
+    updateStatsDisplay();
+  }, 260);
+  
+  setInterval(function() { // Smooth scroll will keep scrolling after the last event. Update page offset.
+    updateStatsDisplay();
+  }, 200);
+
+  var eventTypes = [
+    "wheel",
+    "mousewheel",
+    "DOMMouseScroll",
+    "MozMousePixelScroll"
+  ];
+
+  var props = [
+    "deltaX",
+    "deltaY",
+    "deltaZ",
+    "detail",
+    "wheelDeltaX",
+    "wheelDeltaY",
+    "wheelDelta",
+    "webkitMovementX",
+    "webkitMovementY"
+  ];
+ 
+  var consts = {
+    axis:      ["HORIZONTAL_AXIS", "VERTICAL_AXIS"],
+    deltaMode: ["DOM_DELTA_PIXEL", "DOM_DELTA_LINE", "DOM_DELTA_PAGE"]
+  };
+  
+  for (var t in eventTypes) {
+    var handler = function (e) {
+      //var dbg=""; for (var i in e) dbg += i + ": " + e[i] + "<br/>"; $("dbg").innerHTML = dbg;
+
+      var modes = "";
+      for (var prop in consts) {
+        if (prop in e) {
+          var mode = " (" + prop + ": " + e[prop] + ")";
+          for (var c in consts[prop]) {
+            if (e[prop] == e[consts[prop][c]]) {
+              mode = " (" + prop + ": " + consts[prop][c] + ")";
+            }
+          }
+          modes += mode;
+        }
+      }
+
+      for (var i in props) {
+        accumulate(e.type, props[i] + modes, e[props[i]]); // type, combined id, delta value
+      }
+    }
+    
+    document.documentElement.addEventListener(eventTypes[t], handler);
+  }
+}
+</script>
+<style>
+.topLeft { position: fixed; top: 0;    left : 0; }
+.topLeft2{ position: fixed; top: 40px; left : 0; }
+
+.long    { height: 30000px; }
+.wide    { width:  5000px;  }
+
+.grad    { background: linear-gradient(to top, gray, white);
+           background: -webkit-gradient(linear, left bottom, left top, from(gray), to(white));
+           background-size: 200px 500px; }
+</style>
+</head>
+
+<body onload="initPage()" class="long wide grad">
+  <input value="Reset / Reload" onclick="history.go(0);" class="topLeft" type="button">
+  <div id="accumulation" class="topLeft2">pageYOffset: 0<br><b>Accumulated:</b><br></div>
+  <div id="dbg" style="text-align: right"></div>
+
+</body></html>
