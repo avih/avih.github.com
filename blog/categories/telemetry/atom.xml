@@ -4,7 +4,7 @@
   <title><![CDATA[Category: telemetry | Operation: Smooth]]></title>
   <link href="http://avih.github.com/blog/categories/telemetry/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-01-13T08:26:54+02:00</updated>
+  <updated>2015-01-13T08:28:42+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -152,7 +152,7 @@
   </li>
 </ul>
 
-<p>It’s probably a safe bet to say that the test will break before the code which it tests breaks. This can’t be a good thing…</p>
+<p>It’s probably a safe bet to say that the test will break before the code which it tests breaks. This can’t be a good thing..</p>
 
 <p>There are probably few junctions where we could have taken a different path and possibly end up with better/simpler/safer/smaller code, and yet, this is where it stands now.</p>
 
