@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-03-19T21:28:34+02:00</updated>
+  <updated>2015-03-19T21:34:41+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -38,8 +38,9 @@
 
 <pre><code>$ python compare.py --compare-e10s --rev 42afc7ef5ccb --pgo --verbose --branch Firefox --platform Win7 --master-revision 42afc7ef5ccb
 
-Windows 7          [ non-e10s ]             [   e10s   ]
-                  geometric-mean   change  geometric-mean
+Windows 7          [ non-e10s ]             [  e10s   ]
+                   [ results  ]    change   [ results ]
+
 -   tresize               15.1   [  +1.7%]      15.4
 -   kraken              1529.3   [  +3.9%]    1589.3
 +   v8_7               17798.4   [  +1.6%]*  18080.1
@@ -61,8 +62,9 @@ Windows 7          [ non-e10s ]             [   e10s   ]
 
 $ python compare.py --compare-e10s --rev 42afc7ef5ccb --pgo --verbose --branch Firefox --platform Linux --master-revision 42afc7ef5ccb
 
-Ubuntu 32          [ non-e10s ]             [   e10s   ]
-                  geometric-mean   change  geometric-mean
+Ubuntu 32          [ non-e10s ]             [  e10s   ]
+                   [ results  ]    change   [ results ]
+
 ++  tresize               17.2   [ -25.1%]      12.9
 -   kraken              1571.8   [  +2.2%]    1606.6
 +   v8_7               19309.3   [  +0.5%]*  19399.8
