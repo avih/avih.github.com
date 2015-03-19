@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-01-13T08:29:50+02:00</updated>
+  <updated>2015-03-19T21:28:34+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -12,6 +12,93 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Firefox e10s Performance on Talos]]></title>
+    <link href="http://avih.github.com/blog/2015/03/19/firefox-e10s-performance-on-talos/"/>
+    <updated>2015-03-19T20:57:00+02:00</updated>
+    <id>http://avih.github.com/blog/2015/03/19/firefox-e10s-performance-on-talos</id>
+    <content type="html"><![CDATA[<p><a href="https://wiki.mozilla.org/Electrolysis">Electrolysis</a>, or e10s, is a Firefox project whose goal is to spread the work of browsing the web over multiple processes. The main initial goal is to separate the UI from web content and reduce negative effects one could have over the other.</p>
+
+<p>e10s is already enabled by default on Firefox Nightly builds, and tabs which run on a different process than the UI are marked with an underline at the tab’s title.</p>
+
+<p>While currently the e10s team’s main focus is correctness more than performance (<a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am5%2B&amp;list_id=11854313">one bug list</a> and <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am6%2B&amp;list_id=11996237">another</a>), we can start collecting performance data and understand roughly where we stand.</p>
+
+<p>jmaher, wlach and myself worked to make Talos run well in e10s Firefox and provide meaningful results. The Talos harness and tests now run well on Windows and Linux, while OS X should be handled shortly (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1124728">bug 1124728</a>). Session restore tests are still not working with e10s (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1098357">bug 1098357</a>).</p>
+
+<p>Talos e10s tests run by default on m-c pushes, though <a href="https://treeherder.mozilla.org/">Treeherder</a> still hides the e10s results (they can be unhidden from the top right corner of the Treeherder job page).</p>
+
+<p>To compare e10s Talos results with non-e10s we use <code>compare.py</code>, a script which is available in the Talos repository. We’ve improved it recently to make such comparisons more useful. It’s also possible to use the <a href="https://compare-talos.paas.mozilla.org/">compare-talos</a> web tool.</p>
+
+<p>Here are some numbers on Windows 7 and Ubuntu 32 comparing e10s to non-e10s Talos results of a recent build using <code>compare.py</code> (the output below has been made more readable but the numbers have not been modified). For most test results - lower-is-better, except where indicated by an asterix <code>*</code> next to the change <code>%</code>.</p>
+
+<p>At the beginning of each line, a plus <code>+</code> marks an improvement for e10s, and a minus <code>-</code> marks a regression of e10s builds compared to the non-e10s builds.</p>
+
+<p><a href="https://wiki.mozilla.org/Buildbot/Talos/Tests">Descriptions of all Talos tests</a> and what their numbers mean.</p>
+
+<pre><code>$ python compare.py --compare-e10s --rev 42afc7ef5ccb --pgo --verbose --branch Firefox --platform Win7 --master-revision 42afc7ef5ccb
+
+Windows 7          [ non-e10s ]             [   e10s   ]
+                  geometric-mean   change  geometric-mean
+-   tresize               15.1   [  +1.7%]      15.4
+-   kraken              1529.3   [  +3.9%]    1589.3
++   v8_7               17798.4   [  +1.6%]*  18080.1
++   dromaeo_css         5815.2   [  +3.7%]*   6033.2
+-   dromaeo_dom         1310.6   [  -0.5%]*   1304.5
++   a11yr                178.7   [  -0.2%]     178.5
+++  ts_paint             797.7   [ -47.8%]     416.3
++   tpaint               155.3   [  -4.2%]     148.8
+++  tsvgr_opacity        228.2   [ -56.5%]      99.2
+-   tp5o                 225.4   [  +5.3%]     237.3
++   tart                   8.6   [  -1.0%]       8.5
++   tcanvasmark         5696.9   [  +0.6%]*   5732.0
+++  tsvgx                199.1   [ -24.7%]     149.8
++   tscrollx               3.0   [  -0.2%]       3.0
+--- glterrain              5.1   [+268.9%]      18.9
++   cart                  53.5   [  -1.2%]      52.8
+++  tp5o_scroll            3.4   [ -13.0%]       3.0
+
+
+$ python compare.py --compare-e10s --rev 42afc7ef5ccb --pgo --verbose --branch Firefox --platform Linux --master-revision 42afc7ef5ccb
+
+Ubuntu 32          [ non-e10s ]             [   e10s   ]
+                  geometric-mean   change  geometric-mean
+++  tresize               17.2   [ -25.1%]      12.9
+-   kraken              1571.8   [  +2.2%]    1606.6
++   v8_7               19309.3   [  +0.5%]*  19399.8
++   dromaeo_css         5646.3   [  +3.9%]*   5866.8
++   dromaeo_dom         1129.1   [  +3.9%]*   1173.0
+-   a11yr                241.5   [  +5.0%]     253.5
+++  ts_paint             876.3   [ -50.6%]     432.6
+-   tpaint               197.4   [  +5.2%]     207.6
+++  tsvgr_opacity        218.3   [ -60.6%]      86.0
+--  tp5o                 269.2   [ +21.8%]     328.0
+--  tart                   6.2   [ +13.9%]       7.1
+--  tcanvasmark         8153.4   [ -15.6%]*   6877.7
+--  tsvgx                580.8   [ +10.2%]     639.7
+++  tscrollx               9.1   [ -16.5%]       7.6
++   glterrain             22.6   [  -1.4%]      22.3
+-   cart                  42.0   [  +6.5%]      44.7
+++  tp5o_scroll            8.8   [ -12.4%]       7.7
+</code></pre>
+
+<p>For the most part, the Talos scores are comparable with a few improvements and a few regressions - most of them relatively small. Windows e10s results fare a bit better than Linux results.</p>
+
+<p>Overall, that’s a great starting point for e10s!</p>
+
+<p>A noticeable improvement on both platforms is <a href="https://wiki.mozilla.org/Buildbot/Talos/Tests#tp5o_scroll">tp5o-scroll</a>. This test scrolls the top-50 Alexa pages and measures how fast it can iterate with vsync disabled (ASAP mode).</p>
+
+<p>A noticeable regression on Windows is WebGL (glterrain) - Firefox with e10s performs roughly 3x slower than non-e10s Firefox - <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1028859">bug 1028859</a> (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1144906">bug 1144906</a> should also help for Windows).</p>
+
+<p>A supposed notable improvement is of the <a href="https://wiki.mozilla.org/Buildbot/Talos/Tests#tsvg-opacity">tsvg-opacity test</a>, however, this test is sometimes too sensitive to underlying platform changes (regardless of e10s), and we should probably keep an eye on it (yet again, e.g. <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1027481">bug 1027481</a>).</p>
+
+<p>We don’t have bugs filed yet for most Talos e10s regressions since we don’t have systems in place to alert us of them, and it’s still not trivial for developers to obtain e10s test results (e10s doesn’t run on try-server yet, and on m-c it also doesn’t run on every batch of pushes). See <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1144120">bug 1144120</a>.</p>
+
+<p>Snappiness is something that both the performance team and the e10s team care deeply about, and so we’ll be working closely together when it comes time to focus on making multi-process Firefox zippy.</p>
+
+<p>Thanks to vladan and mconley for their valuable comments.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The simple story of activeTicks telemetry]]></title>
