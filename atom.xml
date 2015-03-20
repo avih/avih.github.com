@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-03-19T21:34:41+02:00</updated>
+  <updated>2015-03-20T02:42:31+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -30,16 +30,23 @@
 
 <p>To compare e10s Talos results with non-e10s we use <code>compare.py</code>, a script which is available in the Talos repository. We’ve improved it recently to make such comparisons more useful. It’s also possible to use the <a href="https://compare-talos.paas.mozilla.org/">compare-talos</a> web tool.</p>
 
-<p>Here are some numbers on Windows 7 and Ubuntu 32 comparing e10s to non-e10s Talos results of a recent build using <code>compare.py</code> (the output below has been made more readable but the numbers have not been modified). For most test results - lower-is-better, except where indicated by an asterix <code>*</code> next to the change <code>%</code>.</p>
+<p>Here are some numbers on Windows 7 and Ubuntu 32 comparing e10s to non-e10s Talos results of a recent build using <code>compare.py</code> (the output below has been made more readable but the numbers have not been modified).</p>
 
-<p>At the beginning of each line, a plus <code>+</code> marks an improvement for e10s, and a minus <code>-</code> marks a regression of e10s builds compared to the non-e10s builds.</p>
+<p>At the <strong>beginning</strong> of each line:</p>
+
+<ul>
+  <li>A plus <code>+</code> means that e10s is better.</li>
+  <li>A minus <code>-</code> means that e10s is worse.</li>
+</ul>
+
+<p>The <code>change %</code> value refers how the e10s numbers compare to the non e10s numbers, where a positive percentage means that the e10s numbers are higher (usually this means e10s performs worse, except on tests where higher-is-better which are marked with an asterix <code>*</code> next to the change <code>%</code>).</p>
 
 <p><a href="https://wiki.mozilla.org/Buildbot/Talos/Tests">Descriptions of all Talos tests</a> and what their numbers mean.</p>
 
 <pre><code>$ python compare.py --compare-e10s --rev 42afc7ef5ccb --pgo --verbose --branch Firefox --platform Win7 --master-revision 42afc7ef5ccb
 
 Windows 7          [ non-e10s ]             [  e10s   ]
-                   [ results  ]    change   [ results ]
+                   [ results  ]   change %  [ results ]
 
 -   tresize               15.1   [  +1.7%]      15.4
 -   kraken              1529.3   [  +3.9%]    1589.3
