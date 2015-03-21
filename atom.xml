@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-03-21T13:46:13+02:00</updated>
+  <updated>2015-03-21T13:51:13+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -18,7 +18,7 @@
     <link href="http://avih.github.com/blog/2015/03/19/firefox-e10s-performance-on-talos/"/>
     <updated>2015-03-19T20:57:00+02:00</updated>
     <id>http://avih.github.com/blog/2015/03/19/firefox-e10s-performance-on-talos</id>
-    <content type="html"><![CDATA[<p>TL;DR Talos runs performance tests on Firefox e10s on mozilla-central, not yet on try-server. OS X still don’t work. e10s reaults are similar, with notable scroll performance improvement</p>
+    <content type="html"><![CDATA[<p><em>TL;DR</em>  Talos runs performance tests on Firefox e10s on mozilla-central, not yet on try-server. OS X still doesn’t work. e10s reaults are similar, with notable scroll performance improvement on Windows and Linux, and notable WebGL regression on Windows.</p>
 
 <p><a href="https://wiki.mozilla.org/Electrolysis">Electrolysis</a>, or e10s, is a Firefox project whose goal is to spread the work of browsing the web over multiple processes. The main initial goal is to separate the UI from web content and reduce negative effects one could have over the other.</p>
 
