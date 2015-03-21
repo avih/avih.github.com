@@ -9,7 +9,7 @@
   <meta name="author" content="Avi Halachmi (:avih)">
 
   
-  <meta name="description" content="Electrolysis, or e10s, is a Firefox project whose goal is to spread the work of browsing the web over multiple processes. The main initial goal is to &hellip;">
+  <meta name="description" content="TL;DR Talos runs performance tests on Firefox e10s on mozilla-central, not yet on try-server. OS X still don’t work. e10s reaults are similar, with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -94,11 +94,14 @@
   </header>
 
 
-<div class="entry-content"><p><a href="https://wiki.mozilla.org/Electrolysis">Electrolysis</a>, or e10s, is a Firefox project whose goal is to spread the work of browsing the web over multiple processes. The main initial goal is to separate the UI from web content and reduce negative effects one could have over the other.</p>
+<div class="entry-content"><p>TL;DR Talos runs performance tests on Firefox e10s on mozilla-central, not yet on try-server. OS X still don’t work. e10s reaults are similar, with notable scroll performance improvement</p>
+
+<p><a href="https://wiki.mozilla.org/Electrolysis">Electrolysis</a>, or e10s, is a Firefox project whose goal is to spread the work of browsing the web over multiple processes. The main initial goal is to separate the UI from web content and reduce negative effects one could have over the other.</p>
 
 <p>e10s is already enabled by default on Firefox Nightly builds, and tabs which run on a different process than the UI are marked with an underline at the tab’s title.</p>
 
-<p>While currently the e10s team’s main focus is correctness more than performance (<a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am5%2B&amp;list_id=11854313">one bug list</a> and <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am6%2B&amp;list_id=11996237">another</a>), we can start collecting performance data and understand roughly where we stand.</p>
+<p>While currently the e10s team’s main focus is correctness more than performance (<a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am5%2B&amp;list_id=11854313">one bug list</a> and <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am6%2B&amp;list_id=11996237">another</a>), we can start collecting performance data and understand roughly where we stand.
+<!-- more --></p>
 
 <p>jmaher, wlach and myself worked to make Talos run well in e10s Firefox and provide meaningful results. The Talos harness and tests now run well on Windows and Linux, while OS X should be handled shortly (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1124728">bug 1124728</a>). Session restore tests are still not working with e10s (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1098357">bug 1098357</a>).</p>
 

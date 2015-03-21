@@ -4,7 +4,7 @@
   <title><![CDATA[Category: tscroll | Operation: Smooth]]></title>
   <link href="http://avih.github.com/blog/categories/tscroll/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-03-20T02:58:41+02:00</updated>
+  <updated>2015-03-21T13:46:13+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -26,7 +26,8 @@
 
 <p>Without vsync, Firefox uses 60hz refresh rate by default, which works relatively decently with 60hz displays, but fails badly at displaying properly smooth animations on monitors with other refresh rates (50hz on quite a few laptop displays, 100hz monitors, etc).</p>
 
-<p>However, the current implementation synchronizes with the main display only, so if using a multi-monitor setup, Firefox windows on secondary monitors might not gain from this.</p>
+<p>However, the current implementation synchronizes with the main display only, so if using a multi-monitor setup, Firefox windows on secondary monitors might not gain from this.
+<!-- more --></p>
 
 <p>You can control the refresh rate manually by modifying <code>layout.frame_rate</code> at <code>about:config</code> (and restart Firefox). The default value is <code>-1</code> which means “Use vsync if available or 60hz otherwise”. Any other integer value &gt; 0 will force that specific refresh rate.</p>
 
@@ -34,7 +35,8 @@
 
 <h3 id="aboutnewtab">about:newtab</h3>
 
-<p><code>about:newtab</code> is the default page when opening a new empty tab - with the thumbnails of recently visited pages. It was <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=752839#c11">affecting tab animations badly</a>, to the point of displaying as little as a 3 frames slideshow on low-end systems while animating the tabstrip after pressing the <code>+</code> button to add a tab.</p>
+<p><code>about:newtab</code> is the default page when opening a new empty tab - with the thumbnails of recently visited pages. It was <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=752839#c11">affecting tab animations badly</a>, to the point of displaying as little as a 3 frames slideshow on low-end systems while animating the tabstrip after pressing the <code>+</code> button to add a tab.
+<!-- more --></p>
 
 <p><em>Tim Taubert</em> from the Firefox team has done some extensive work <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=843853">recently</a> on several bugs which fall into two categories:</p>
 

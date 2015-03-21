@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-03-20T02:58:41+02:00</updated>
+  <updated>2015-03-21T13:46:13+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -18,11 +18,14 @@
     <link href="http://avih.github.com/blog/2015/03/19/firefox-e10s-performance-on-talos/"/>
     <updated>2015-03-19T20:57:00+02:00</updated>
     <id>http://avih.github.com/blog/2015/03/19/firefox-e10s-performance-on-talos</id>
-    <content type="html"><![CDATA[<p><a href="https://wiki.mozilla.org/Electrolysis">Electrolysis</a>, or e10s, is a Firefox project whose goal is to spread the work of browsing the web over multiple processes. The main initial goal is to separate the UI from web content and reduce negative effects one could have over the other.</p>
+    <content type="html"><![CDATA[<p>TL;DR Talos runs performance tests on Firefox e10s on mozilla-central, not yet on try-server. OS X still don’t work. e10s reaults are similar, with notable scroll performance improvement</p>
+
+<p><a href="https://wiki.mozilla.org/Electrolysis">Electrolysis</a>, or e10s, is a Firefox project whose goal is to spread the work of browsing the web over multiple processes. The main initial goal is to separate the UI from web content and reduce negative effects one could have over the other.</p>
 
 <p>e10s is already enabled by default on Firefox Nightly builds, and tabs which run on a different process than the UI are marked with an underline at the tab’s title.</p>
 
-<p>While currently the e10s team’s main focus is correctness more than performance (<a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am5%2B&amp;list_id=11854313">one bug list</a> and <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am6%2B&amp;list_id=11996237">another</a>), we can start collecting performance data and understand roughly where we stand.</p>
+<p>While currently the e10s team’s main focus is correctness more than performance (<a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am5%2B&amp;list_id=11854313">one bug list</a> and <a href="https://bugzilla.mozilla.org/buglist.cgi?quicksearch=cf_tracking_e10s%3Am6%2B&amp;list_id=11996237">another</a>), we can start collecting performance data and understand roughly where we stand.
+<!-- more --></p>
 
 <p>jmaher, wlach and myself worked to make Talos run well in e10s Firefox and provide meaningful results. The Talos harness and tests now run well on Windows and Linux, while OS X should be handled shortly (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1124728">bug 1124728</a>). Session restore tests are still not working with e10s (<a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1098357">bug 1098357</a>).</p>
 
@@ -280,7 +283,8 @@ Ubuntu 32          [ non-e10s ]             [  e10s   ]
 
 <h3 id="tart---tab-animation-regression-test">TART - Tab Animation Regression Test</h3>
 
-<p>After previous work which went into improving tab animations in Firefox, It’s time to put it into Talos. TART is implemented as an addon which works either stand alone or from within Talos. It measures frames intervals during different animation cases, and it works equally well on mozilla-central and on the UX branch.</p>
+<p>After previous work which went into improving tab animations in Firefox, It’s time to put it into Talos. TART is implemented as an addon which works either stand alone or from within Talos. It measures frames intervals during different animation cases, and it works equally well on mozilla-central and on the UX branch.
+<!-- more --></p>
 
 <p>TART uses ASAP mode to iterate animation with unlimited frame rate, thus able to expose differences even if under normal conditions it would have been limited to 60Hz.</p>
 
@@ -361,7 +365,8 @@ Ubuntu 32          [ non-e10s ]             [  e10s   ]
 
 <p>Without vsync, Firefox uses 60hz refresh rate by default, which works relatively decently with 60hz displays, but fails badly at displaying properly smooth animations on monitors with other refresh rates (50hz on quite a few laptop displays, 100hz monitors, etc).</p>
 
-<p>However, the current implementation synchronizes with the main display only, so if using a multi-monitor setup, Firefox windows on secondary monitors might not gain from this.</p>
+<p>However, the current implementation synchronizes with the main display only, so if using a multi-monitor setup, Firefox windows on secondary monitors might not gain from this.
+<!-- more --></p>
 
 <p>You can control the refresh rate manually by modifying <code>layout.frame_rate</code> at <code>about:config</code> (and restart Firefox). The default value is <code>-1</code> which means “Use vsync if available or 60hz otherwise”. Any other integer value &gt; 0 will force that specific refresh rate.</p>
 
@@ -369,7 +374,8 @@ Ubuntu 32          [ non-e10s ]             [  e10s   ]
 
 <h3 id="aboutnewtab">about:newtab</h3>
 
-<p><code>about:newtab</code> is the default page when opening a new empty tab - with the thumbnails of recently visited pages. It was <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=752839#c11">affecting tab animations badly</a>, to the point of displaying as little as a 3 frames slideshow on low-end systems while animating the tabstrip after pressing the <code>+</code> button to add a tab.</p>
+<p><code>about:newtab</code> is the default page when opening a new empty tab - with the thumbnails of recently visited pages. It was <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=752839#c11">affecting tab animations badly</a>, to the point of displaying as little as a 3 frames slideshow on low-end systems while animating the tabstrip after pressing the <code>+</code> button to add a tab.
+<!-- more --></p>
 
 <p><em>Tim Taubert</em> from the Firefox team has done some extensive work <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=843853">recently</a> on several bugs which fall into two categories:</p>
 
@@ -540,7 +546,8 @@ Ubuntu 32          [ non-e10s ]             [  e10s   ]
     <content type="html"><![CDATA[<p>Quick update on recent progress.</p>
 
 <h3 id="vsync-from-a-thread">Vsync from a thread</h3>
-<p>Following the first experimental <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">vsync implementation</a> on Windows (using GetVBlankInfo which is non-blocking and synchronous), I’ve been experimenting with another implementation which vlad suggested: Run a thread which uses WaitForVBlank (blocking until next vblank) and post the timing event to the main thread.</p>
+<p>Following the first experimental <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">vsync implementation</a> on Windows (using GetVBlankInfo which is non-blocking and synchronous), I’ve been experimenting with another implementation which vlad suggested: Run a thread which uses WaitForVBlank (blocking until next vblank) and post the timing event to the main thread.
+<!-- more --></p>
 
 <p>The conclusions are <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427#c38">here</a>. In a nutshell: WaitForVBlank works nicely (when it works), but also blocks the main thread, and while some circumvention is possible (using sleep), it’s still far from ideal. Thanks goes (yet again) to Bas for helpful tips on Windows APIs and integration into the Layer manager.</p>
 
@@ -594,7 +601,8 @@ Ubuntu 32          [ non-e10s ]             [  e10s   ]
 <p>The <a href="http://avih.github.com/blog/2013/04/14/tabstrip-project-intro/">previous post</a> introduced the Tabstrip animation project, and some work which has been done so far. This post reviews some more recent related progress.</p>
 
 <h3 id="vsync">Vsync</h3>
-<p>During the Paris <a href="http://taras.glek.net/blog/2013/03/26/snappy-number-54-snappy-discussion-in-paris/">snappy work week</a>, Bas and I discussed animation smoothness, and specifically the default 60hz refresh rate which Firefox currently uses. We’ve conducted a very unscientific poll among some attendees at the meeting, and found out that 4 out of 9 laptops had 50Hz monitor refresh rate. The rest had 60. For those with 60Hz, the current refresh system is acceptable, even if not perfect (actually  … <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ee417025%28v=vs.85%29.aspx">Often, developers choose 60 Hz as the refresh rate, not knowing that the enumerated refresh rate from the monitor is approximately 60,000 / 1,001 Hz</a> …), but those with 50Hz monitors will always get a very noticeable jitter during any animation.</p>
+<p>During the Paris <a href="http://taras.glek.net/blog/2013/03/26/snappy-number-54-snappy-discussion-in-paris/">snappy work week</a>, Bas and I discussed animation smoothness, and specifically the default 60hz refresh rate which Firefox currently uses. We’ve conducted a very unscientific poll among some attendees at the meeting, and found out that 4 out of 9 laptops had 50Hz monitor refresh rate. The rest had 60. For those with 60Hz, the current refresh system is acceptable, even if not perfect (actually  … <a href="http://msdn.microsoft.com/en-us/library/windows/desktop/ee417025%28v=vs.85%29.aspx">Often, developers choose 60 Hz as the refresh rate, not knowing that the enumerated refresh rate from the monitor is approximately 60,000 / 1,001 Hz</a> …), but those with 50Hz monitors will always get a very noticeable jitter during any animation.
+<!-- more --></p>
 
 <p>So Bas wrote a patch to expose some vblank timing info on windows via widget, and I updated the refresh driver to use this info. The result is decent vsync synchronization on monitors with all refresh rates (you can test the slightly outdated <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427#c5">Windows try build</a>, which hasn’t landed).</p>
 

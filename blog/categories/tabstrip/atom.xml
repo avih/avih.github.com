@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Tabstrip | Operation: Smooth]]></title>
   <link href="http://avih.github.com/blog/categories/tabstrip/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-03-20T02:58:41+02:00</updated>
+  <updated>2015-03-21T13:46:13+02:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -21,7 +21,8 @@
     <content type="html"><![CDATA[<p>Quick update on recent progress.</p>
 
 <h3 id="vsync-from-a-thread">Vsync from a thread</h3>
-<p>Following the first experimental <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">vsync implementation</a> on Windows (using GetVBlankInfo which is non-blocking and synchronous), I’ve been experimenting with another implementation which vlad suggested: Run a thread which uses WaitForVBlank (blocking until next vblank) and post the timing event to the main thread.</p>
+<p>Following the first experimental <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427">vsync implementation</a> on Windows (using GetVBlankInfo which is non-blocking and synchronous), I’ve been experimenting with another implementation which vlad suggested: Run a thread which uses WaitForVBlank (blocking until next vblank) and post the timing event to the main thread.
+<!-- more --></p>
 
 <p>The conclusions are <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=856427#c38">here</a>. In a nutshell: WaitForVBlank works nicely (when it works), but also blocks the main thread, and while some circumvention is possible (using sleep), it’s still far from ideal. Thanks goes (yet again) to Bas for helpful tips on Windows APIs and integration into the Layer manager.</p>
 
