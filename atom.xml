@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-03-21T13:51:13+02:00</updated>
+  <updated>2015-10-23T01:30:31+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -12,6 +12,38 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fennec vs Chrome performance - Fennec loses (contentperf)]]></title>
+    <link href="http://avih.github.com/blog/2015/10/23/fennec-vs-chrome-scrolling-and-navigation-contentperf/"/>
+    <updated>2015-10-23T00:44:00+03:00</updated>
+    <id>http://avih.github.com/blog/2015/10/23/fennec-vs-chrome-scrolling-and-navigation-contentperf</id>
+    <content type="html"><![CDATA[<p>As part of the <a href="https://wiki.mozilla.org/Firefox/Content_Performance_Program">Content-Performance program</a>, we recently completed an extensive test of scroll and navigation performance comparison using 20 top sites between 3 browsers on Android (5.0.1, Galaxy S4): Fennec 43 Aurora, Chrome and “Internet” (the default browser on the S4).</p>
+
+<ul>
+  <li>In general, Fennec scrolls worse than Chrome, especially on non trivial pages. But there are other issues too. We filed the following bugs:
+    <ul>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217415">Bug 1217415</a> - Fennec page navigation is slower than Chrome on some sites (e.g. Wikipedia, ebay)</li>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217372">Bug 1217372</a> -  Fennec has text input lag in autocomplete boxes (google, bing) which Chrome doesn’t.</li>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217370">Bug 1217370</a> - On fast scroll swipes, sometimes the momentum is less than expected (and less than Chrome).</li>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217364">Bug 1217364</a> - Inconsistent scroll progression (momentum) without user inputs.</li>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217366">Bug 1217366</a> - Visible low resolution rendering, especially for fast swipes.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Hopefully, at least some of the scroll issues would be resolved or at the very least improved once Fennec gets async-pan-and-zoom (APZ). APZ is expected to land soon on Fennec nightliy 44 before it becomes Aurora (on Firefox-desktop - APZ is already enabled by default on nightly builds).</p>
+
+<h4 id="content-perf-observations">Content-perf observations</h4>
+<p>Also on the subject of content-perf, we’ve recently filed quite a few bugs for desktop Firefox which were observed throughout our experiments. Vladan also blogged about it <a href="http://blog.vladan.org/2015/06/26/announcing-the-content-performance-program.html">here</a> and more recently <a href="http://blog.vladan.org/2015/10/09/update-from-content-performance-program-2.html">here</a>.</p>
+
+<p>However, the bugs which we filed usually relate to specific cases or issues, but don’t expose non-issues, i.e. cases where Firefox is similar or better than other browsers, and they also don’t expose the scope of the experiments and the big picture in order to better assess the weight of the existing issues, nor do they expose general observations which were made.</p>
+
+<p>To address this, we created a content-performance <a href="https://wiki.mozilla.org/Firefox/Content_Performance_Program/Observations">observations page</a>. This page summarizes all the experiments which we performed, including their scope, procedures and observations, for both Desktop Firefox and fennec.</p>
+
+<p>Let us know if you have any feedback on existing experiments and results, or suggestions for more experiments on either Desktop or Android, especially if there are no existing bugs where such discussion could take place.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Firefox e10s Performance on Talos]]></title>

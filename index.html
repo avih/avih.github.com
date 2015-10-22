@@ -9,7 +9,7 @@
   <meta name="author" content="Avi Halachmi (:avih)">
 
   
-  <meta name="description" content="TL;DR Talos runs performance tests on Firefox e10s on mozilla-central, not yet on try-server. OS X still doesn’t work. e10s reaults are similar, with &hellip;">
+  <meta name="description" content="As part of the Content-Performance program, we recently completed an extensive test of scroll and navigation performance comparison using 20 top &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -66,6 +66,67 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2015/10/23/fennec-vs-chrome-scrolling-and-navigation-contentperf/">Fennec vs Chrome Performance - Fennec Loses (Contentperf)</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-10-23T00:44:00+03:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2015</time>
+        
+         | <a href="/blog/2015/10/23/fennec-vs-chrome-scrolling-and-navigation-contentperf/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>As part of the <a href="https://wiki.mozilla.org/Firefox/Content_Performance_Program">Content-Performance program</a>, we recently completed an extensive test of scroll and navigation performance comparison using 20 top sites between 3 browsers on Android (5.0.1, Galaxy S4): Fennec 43 Aurora, Chrome and “Internet” (the default browser on the S4).</p>
+
+<ul>
+  <li>In general, Fennec scrolls worse than Chrome, especially on non trivial pages. But there are other issues too. We filed the following bugs:
+    <ul>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217415">Bug 1217415</a> - Fennec page navigation is slower than Chrome on some sites (e.g. Wikipedia, ebay)</li>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217372">Bug 1217372</a> -  Fennec has text input lag in autocomplete boxes (google, bing) which Chrome doesn’t.</li>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217370">Bug 1217370</a> - On fast scroll swipes, sometimes the momentum is less than expected (and less than Chrome).</li>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217364">Bug 1217364</a> - Inconsistent scroll progression (momentum) without user inputs.</li>
+      <li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1217366">Bug 1217366</a> - Visible low resolution rendering, especially for fast swipes.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Hopefully, at least some of the scroll issues would be resolved or at the very least improved once Fennec gets async-pan-and-zoom (APZ). APZ is expected to land soon on Fennec nightliy 44 before it becomes Aurora (on Firefox-desktop - APZ is already enabled by default on nightly builds).</p>
+
+<h4 id="content-perf-observations">Content-perf observations</h4>
+<p>Also on the subject of content-perf, we’ve recently filed quite a few bugs for desktop Firefox which were observed throughout our experiments. Vladan also blogged about it <a href="http://blog.vladan.org/2015/06/26/announcing-the-content-performance-program.html">here</a> and more recently <a href="http://blog.vladan.org/2015/10/09/update-from-content-performance-program-2.html">here</a>.</p>
+
+<p>However, the bugs which we filed usually relate to specific cases or issues, but don’t expose non-issues, i.e. cases where Firefox is similar or better than other browsers, and they also don’t expose the scope of the experiments and the big picture in order to better assess the weight of the existing issues, nor do they expose general observations which were made.</p>
+
+<p>To address this, we created a content-performance <a href="https://wiki.mozilla.org/Firefox/Content_Performance_Program/Observations">observations page</a>. This page summarizes all the experiments which we performed, including their scope, procedures and observations, for both Desktop Firefox and fennec.</p>
+
+<p>Let us know if you have any feedback on existing experiments and results, or suggestions for more experiments on either Desktop or Android, especially if there are no existing bugs where such discussion could take place.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -520,52 +581,6 @@
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/">Help Wanted - Slow Touchpad Scroll in Firefox?</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-28T19:33:00+02:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
-        
-         | <a href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=829952">Bug 829952</a> says that scrolling using the touchpad feels slow on some laptops.</p>
-
-<p>Turns out that it’s quite hard to provide a consistent scroll experience on the various platforms which Firefox supports, due to many laptop and touchpad manufacturers, different drivers, OS configurations etc. We could have provided some (or a lot of) configuration UI, but the best solution would be to get it as good as possible out of the box.</p>
-
-<p>And to do that, we need data - and you might be able to help.
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2013/02/28/slow-touchpad-scroll-in-firefox/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -581,6 +596,10 @@
   <ul id="recent_posts">
     
       <li class="post">
+        <a href="/blog/2015/10/23/fennec-vs-chrome-scrolling-and-navigation-contentperf/">Fennec vs Chrome performance - Fennec loses (contentperf)</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/2015/03/19/firefox-e10s-performance-on-talos/">Firefox e10s Performance on Talos</a>
       </li>
     
@@ -594,10 +613,6 @@
     
       <li class="post">
         <a href="/blog/2013/06/10/tabstrip-4-vsync-and-newtab/">Tabstrip #4 - Vsync, newtab, talos, paint starvation</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2013/05/31/private-firefox-sync-server-in-5-mins/">Private Firefox Sync server in 5 minutes</a>
       </li>
     
   </ul>
