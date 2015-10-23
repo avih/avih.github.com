@@ -4,7 +4,7 @@
   <title><![CDATA[Operation: Smooth]]></title>
   <link href="http://avih.github.com/atom.xml" rel="self"/>
   <link href="http://avih.github.com/"/>
-  <updated>2015-10-23T01:30:31+03:00</updated>
+  <updated>2015-10-23T03:52:11+03:00</updated>
   <id>http://avih.github.com/</id>
   <author>
     <name><![CDATA[Avi Halachmi (:avih)]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Fennec vs Chrome performance - Fennec loses (contentperf)]]></title>
+    <title type="html"><![CDATA[Fennec scroll and navigation performance (contentperf)]]></title>
     <link href="http://avih.github.com/blog/2015/10/23/fennec-vs-chrome-scrolling-and-navigation-contentperf/"/>
     <updated>2015-10-23T00:44:00+03:00</updated>
     <id>http://avih.github.com/blog/2015/10/23/fennec-vs-chrome-scrolling-and-navigation-contentperf</id>
